@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react'
-import { buscarLeads } from './services/leads'
-import { buscarLeadsPorOrigem, buscarLeadsPercentualQualificadosOrigem, type LeadsPorOrigem, type QualificacaoPorOrigem } from './services/relatorios'
 import './App.css'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Dashboard from './pages/Dashboard'
 
-//Testa a listagem de leads cadastrados no supabase
 function App() {
 
   {/*const [leads, setLeads] = useState<unknown[]>([])
@@ -31,10 +29,12 @@ function App() {
   }, [])*/}
 
   return (
-    <main>
-      
-     
-    </main>
+    <BrowserRouter>
+    <Routes>
+      <Route path='/' element={<Dashboard />} />
+    </Routes>
+    
+    </BrowserRouter>
   )
 }
 

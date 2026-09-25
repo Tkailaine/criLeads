@@ -1,11 +1,11 @@
 import { supabase } from '../lib/supabase'
 
-type LeadsPorOrigem = {
+export type LeadsPorOrigem = {
     origem: string,
     total_leads: number
 }
 
-type QualificacaoPorOrigem = {
+export type QualificacaoPorOrigem = {
     origem: string,
     total_leads: number,
     total_qualificados: number,

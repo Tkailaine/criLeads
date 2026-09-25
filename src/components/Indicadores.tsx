@@ -5,7 +5,7 @@ type IndicadoresProps = {
 }
 
 //Função que calcula KPIS de leads novos, em contato, qualificados e perdidos.
-function Indicadores({ leads }: IndicadoresProps) {
+export default function Indicadores({ leads }: IndicadoresProps) {
     const total = leads.length
 
     const novos = leads.filter((lead) => lead.status === 'novo').length

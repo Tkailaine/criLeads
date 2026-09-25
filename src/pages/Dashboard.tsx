@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { buscarLeads, type Lead } from '../services/leads'
+import Indicadores  from '../components/Indicadores'
 
 export default function Dashboard() {
     const [leads, setLeads] = useState<Lead[]>([])
@@ -21,7 +22,7 @@ export default function Dashboard() {
         <main>
             <h1>Dashboard</h1>
 
-            <p>Total de leads: {leads.length}</p>
+            <Indicadores leads={leads}/>
         </main>
     )
 }

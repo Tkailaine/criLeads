@@ -1,5 +1,17 @@
 import { supabase } from '../lib/supabase'
 
+type LeadsPorOrigem = {
+    origem: string,
+    total_leads: number
+}
+
+type QualificacaoPorOrigem = {
+    origem: string,
+    total_leads: number,
+    total_qualificados: number,
+    percentual_qualificados: number
+}
+
 /*
 Lista a quantidade de leads por origem que foi calculado direto no supabase, usando uma view:
 

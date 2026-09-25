@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { buscarLeads } from './services/leads'
-import { buscarLeadsPorOrigem } from './services/relatorios'
+import { buscarLeadsPorOrigem, buscarLeadsPercentualQualificadosOrigem } from './services/relatorios'
 import './App.css'
 
 //Testa a listagem de leads cadastrados no supabase
@@ -16,7 +16,10 @@ function App() {
         const dados = await buscarLeads()
         setLeads(dados ?? [])
 
-        const dadosRelatorio = await buscarLeadsPorOrigem()
+        {/*const dadosRelatorio = await buscarLeadsPorOrigem()
+        setRelatorio(dadosRelatorio ?? [])*/}
+        
+        const dadosRelatorio = await buscarLeadsPercentualQualificadosOrigem()
         setRelatorio(dadosRelatorio ?? [])
       } catch (error) {
         console.error(error)
@@ -41,9 +44,23 @@ function App() {
         ))}
       </ul>*/}
 
-      <h1>Relatórios</h1>
-      {/* Testa a listagem de leads por origem */}
+
+     {/*<h1>Relatórios</h1>
+      }
       { erro && <p>{erro}</p>}
+      <ul>
+        {relatorio.map((relatorio, index) => {
+          return(
+            <li key={index}>
+              {JSON.stringify(relatorio)}
+            </li>
+          )
+        })}
+      </ul>*/}
+
+      {/*Lista de Leads por Origem Percentual*/}
+      <h1>Leads por Origem Percentual</h1>
+      {erro && <p>{erro}</p>}
       <ul>
         {relatorio.map((relatorio, index) => {
           return(

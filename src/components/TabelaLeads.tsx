@@ -41,6 +41,19 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
     return (
         <section>
             <h2>Todos os leads cadastrados</h2>
+            {/* Exibe filtro para usuário selecionar */}
+            <div>
+                <label>Status: </label>
+                <select value={filtroStatus} onChange={(e) => setFiltroStatus(e.target.value)}>
+                <option value="">Todos</option>
+                <option value="novo">Novo</option>
+                <option value="em_contato">Em contato</option>
+                <option value="qualificado">Qualificado</option>
+                <option value="perdido">Perdido</option> 
+                </select>
+            </div>
+
+            {/* tabela com os leads */}
             <table>
                 <thead>
                     <tr>

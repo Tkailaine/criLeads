@@ -1,10 +1,44 @@
 import type { Lead } from '../services/leads'
+import { useState } from 'react'
 
 type TabelaLeadsProps = {
     leads: Lead[]
 }
-export default function TabelaLeads({ leads } : TabelaLeadsProps){
-    return(
+export default function TabelaLeads({ leads }: TabelaLeadsProps) {
+
+    const [filtroStatus, setFiltroStatus] = useState('')
+    const [filtroOrigem, setFiltroOrigem] = useState('')
+    const [filtroIntencao, setFiltroIntencao] = useState('')
+    const [filtroFaixaValor, setFiltroFaixaValor] = useState('')
+    const [filtroRegiao, setFiltroRegiao] = useState('')
+
+    //função que filtra os leads com base nos filtros selecionados
+    const leadsFiltrados = leads.filter((lead) => {
+        const correspondeStatus =
+            !filtroStatus || lead.status === filtroStatus
+
+        const correspondeOrigem =
+            !filtroOrigem || lead.origem === filtroOrigem
+
+        const correspondeIntencao =
+            !filtroIntencao || lead.intencao_compra === filtroIntencao
+
+        const correspondeFaixaValor =
+            !filtroFaixaValor || lead.faixa_valor === filtroFaixaValor
+
+        const correspondeRegiao =
+            !filtroRegiao || lead.regiao === filtroRegiao
+
+        return (
+            correspondeStatus &&
+            correspondeOrigem &&
+            correspondeIntencao &&
+            correspondeFaixaValor &&
+            correspondeRegiao
+        )
+    })
+
+    return (
         <section>
             <h2>Todos os leads cadastrados</h2>
             <table>
@@ -21,7 +55,7 @@ export default function TabelaLeads({ leads } : TabelaLeadsProps){
                 </thead>
 
                 <tbody>
-                    {leads.map((lead) => (
+                    {leadsFiltrados.map((lead) => (
                         <tr key={lead.id}>
                             <td>{lead.nome}</td>
                             <td>{lead.origem}</td>

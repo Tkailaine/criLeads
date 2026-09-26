@@ -8,12 +8,57 @@ export default function FormularioLead() {
         texto_interesse: ''
     })
 
+    const [erros, setErros] = useState<{ nome?: string; telefone?: string }>({})
     const [enviando, setEnviando] = useState(false)
     const [statusEnvio, setStatusEnvio] = useState<'idle' | 'sucesso' | 'erro'>('idle')
 
+    // Formata o telefone automaticamente enquanto digita (apenas números)
+    const formatarMascaraTelefone = (valor: string) => {
+        const apenasDigitos = valor.replace(/\D/g, '').slice(0, 11)
+        
+        if (apenasDigitos.length <= 2) {
+            return apenasDigitos.length > 0 ? `(${apenasDigitos}` : ''
+        }
+        if (apenasDigitos.length <= 6) {
+            return `(${apenasDigitos.slice(0, 2)}) ${apenasDigitos.slice(2)}`
+        }
+        if (apenasDigitos.length <= 10) {
+            return `(${apenasDigitos.slice(0, 2)}) ${apenasDigitos.slice(2, 6)}-${apenasDigitos.slice(6)}`
+        }
+        return `(${apenasDigitos.slice(0, 2)}) ${apenasDigitos.slice(2, 7)}-${apenasDigitos.slice(7, 11)}`
+    }
+
+    const handleTelefoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatado = formatarMascaraTelefone(e.target.value)
+        setFormData({ ...formData, telefone: formatado })
+        if (erros.telefone) setErros({ ...erros, telefone: undefined })
+    }
+
+    const handleNomeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, nome: e.target.value })
+        if (erros.nome) setErros({ ...erros, nome: undefined })
+    }
+
+    const validarFormulario = () => {
+        const novosErros: { nome?: string; telefone?: string } = {}
+        const digitosTelefone = formData.telefone.replace(/\D/g, '')
+
+        if (!formData.nome.trim() || formData.nome.trim().length < 3) {
+            novosErros.nome = 'Informe um nome válido (mínimo 3 caracteres).'
+        }
+
+        if (digitosTelefone.length < 10 || digitosTelefone.length > 11) {
+            novosErros.telefone = 'Informe um telefone/WhatsApp válido com DDD (10 ou 11 dígitos).'
+        }
+
+        setErros(novosErros)
+        return Object.keys(novosErros).length === 0
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!formData.nome || !formData.telefone) return
+
+        if (!validarFormulario()) return
 
         const chave_idempotencia = crypto.randomUUID()
 
@@ -21,7 +66,6 @@ export default function FormularioLead() {
         setStatusEnvio('idle')
 
         try {
-
             await fetch('https://n8n.automacoesjuridicas.com.br/webhook-test/entrada-lead', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -31,8 +75,6 @@ export default function FormularioLead() {
                 })
             })
 
-
-            // Simulação rápida de envio bem-sucedido
             setStatusEnvio('sucesso')
             setFormData({
                 nome: '',
@@ -40,6 +82,7 @@ export default function FormularioLead() {
                 origem: 'whatsapp',
                 texto_interesse: ''
             })
+            setErros({})
         } catch (error) {
             console.error('Erro ao enviar webhook:', error)
             setStatusEnvio('erro')
@@ -58,12 +101,18 @@ export default function FormularioLead() {
                     </label>
                     <input
                         type="text"
-                        required
                         placeholder="Ex: Carlos Eduardo"
                         value={formData.nome}
-                        onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                        className="w-full bg-white text-[#040136] font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#EE4C01]"
+                        onChange={handleNomeChange}
+                        className={`w-full bg-white text-[#040136] font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 ${
+                            erros.nome 
+                                ? 'border-2 border-rose-500 focus:ring-rose-500' 
+                                : 'focus:ring-[#EE4C01]'
+                        }`}
                     />
+                    {erros.nome && (
+                        <p className="text-[11px] font-bold text-rose-400 mt-1">{erros.nome}</p>
+                    )}
                 </div>
 
                 {/* Telefone */}
@@ -72,13 +121,20 @@ export default function FormularioLead() {
                         Telefone / WhatsApp *
                     </label>
                     <input
-                        type="text"
-                        required
+                        type="tel"
                         placeholder="Ex: (47) 99123-4567"
                         value={formData.telefone}
-                        onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
-                        className="w-full bg-white text-[#040136] font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#EE4C01]"
+                        onChange={handleTelefoneChange}
+                        maxLength={15}
+                        className={`w-full bg-white text-[#040136] font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 ${
+                            erros.telefone 
+                                ? 'border-2 border-rose-500 focus:ring-rose-500' 
+                                : 'focus:ring-[#EE4C01]'
+                        }`}
                     />
+                    {erros.telefone && (
+                        <p className="text-[11px] font-bold text-rose-400 mt-1">{erros.telefone}</p>
+                    )}
                 </div>
 
                 {/* Origem */}

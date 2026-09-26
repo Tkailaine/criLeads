@@ -19,6 +19,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
 
     const [leadSelecionado, setLeadSelecionado] = useState<Lead | null>(null)
 
+    const statusList = [...new Set(leads.map((lead) => lead.status).filter((item): item is string => Boolean(item)))]
     const origens = [...new Set(leads.map((lead) => lead.origem).filter((item): item is string => Boolean(item)))]
     const intencoes = [...new Set(leads.map((lead) => lead.intencao_compra).filter((item): item is string => Boolean(item)))]
     const faixasValor = [...new Set(leads.map((lead) => lead.faixa_valor).filter((item): item is string => Boolean(item)))]
@@ -31,6 +32,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
     // Filtra leads com base nos filtros selecionados mantendo valores internos
     const leadsFiltrados = leads.filter((lead) => {
         const correspondeStatus = !filtroStatus || lead.status === filtroStatus
+
         const correspondeOrigem = !filtroOrigem || lead.origem === filtroOrigem
         const correspondeIntencao = !filtroIntencao || lead.intencao_compra === filtroIntencao
         const correspondeFaixaValor = !filtroFaixaValor || lead.faixa_valor === filtroFaixaValor
@@ -45,7 +47,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
         )
     })
 
-    //Calcula o total de páginas e fatia os leads para a página atual
+    //Calcula o total de páginas e leads para a página atual
     const totalItens = leadsFiltrados.length
     const totalPaginas = Math.ceil(totalItens / itensPorPagina) || 1
     const inicioIndex = (paginaAtual - 1) * itensPorPagina
@@ -102,21 +104,11 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
 
     return (
         <div className="space-y-6">
-            {/* Cabeçalho da Base de Leads */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
-                <div>
-                    <h2 className="text-2xl md:text-3xl font-black text-[#040136] tracking-tight">
-                        Base de leads
-                    </h2>
-                    <p className="text-sm text-slate-500 font-normal mt-0.5">
-                        Todos os leads registrados no sistema.
-                    </p>
-                </div>
 
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            
                 <div className="flex items-center gap-4 self-start sm:self-auto">
-                    <span className="text-xs font-bold text-[#040136] bg-[#F4F5F8] px-3.5 py-1.5 rounded-xl border border-slate-200/70">
-                        {leadsFiltrados.length} {leadsFiltrados.length === 1 ? 'lead' : 'leads'}
-                    </span>
+                  
                     {temFiltroAtivo && (
                         <button
                             onClick={limparFiltros}
@@ -145,10 +137,11 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                         className="w-full bg-white border border-slate-200 text-xs font-medium text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#040136]"
                     >
                         <option value="">Todos</option>
-                        <option value="novo">Novo</option>
-                        <option value="em_contato">Em Contato</option>
-                        <option value="qualificado">Qualificado</option>
-                        <option value="perdido">Perdido</option>
+                        {statusList.map((status) => (
+                            <option key={status} value={status}>
+                                {formatarStatus(status)}
+                            </option>
+                        ))}
                     </select>
                 </div>
 

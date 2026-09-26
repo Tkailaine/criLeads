@@ -1,11 +1,10 @@
 //Tipagem das propriedades do cabeçalho de atenção
 type HeroAtencaoProps = {
     totalAtencao: number
-    totalPerdidos: number
 }
 
-//Banner informativo de leads críticos e contadores rápidos
-export default function HeroAtencao({ totalAtencao, totalPerdidos }: HeroAtencaoProps) {
+
+export default function HeroAtencao({ totalAtencao }: HeroAtencaoProps) {
     return (
         <section className="bg-[#040136] text-white py-10 md:py-12 border-b border-[#040136]">
             <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-4">
@@ -26,15 +25,11 @@ export default function HeroAtencao({ totalAtencao, totalPerdidos }: HeroAtencao
                         </p>
                     </div>
 
-                    {/* Contadores rápidos de status crítico */}
+                    {/* Contador de leads em atenção */}
                     <div className="flex items-center gap-3">
-                        <div className="bg-white/10 border border-white/15 px-4 py-2 rounded-xl text-center">
-                            <span className="block text-xs font-bold text-amber-400">Em Atenção</span>
-                            <strong className="text-lg font-black text-white">{totalAtencao}</strong>
-                        </div>
-                        <div className="bg-white/10 border border-white/15 px-4 py-2 rounded-xl text-center">
-                            <span className="block text-xs font-bold text-rose-400">+10 Dias / Perdidos</span>
-                            <strong className="text-lg font-black text-white">{totalPerdidos}</strong>
+                        <div className="bg-white/10 border border-white/15 px-5 py-2.5 rounded-xl text-center">
+                            <span className="block text-xs font-bold text-[#EE4C01]">Em Atenção</span>
+                            <strong className="text-xl font-black text-white">{totalAtencao}</strong>
                         </div>
                     </div>
                 </div>

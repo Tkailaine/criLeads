@@ -1,6 +1,6 @@
 import type { Lead } from '../services/leads'
 import { useState } from 'react'
-import { formatarOrigem, formatarStatus, formatarData } from '../utils/formatters'
+import { formatarOrigem, formatarStatus, formatarData, formatarTexto } from '../utils/formatters'
 import { classificarAcompanhamento, calcularDiasSemContato } from '../utils/acompanhamento'
 
 
@@ -212,17 +212,17 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
             {/* Tabela de Leads */}
             <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left text-xs text-slate-700">
+                    <table className="w-full text-center text-xs text-slate-700">
                         <thead className="bg-[#F8F9FB] text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200/80">
                             <tr>
-                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Lead / Contato</th>
-                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Origem</th>
-                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Status</th>
-                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Região</th>
-                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Tipo de Imóvel</th>
-                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Faixa de Valor</th>
-                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Intenção de Compra</th>
-                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Último Contato</th>
+                                <th className="py-4 px-6 font-bold text-[#040136]">Lead / Contato</th>
+                                <th className="py-4 px-6 font-bold text-[#040136]">Origem</th>
+                                <th className="py-4 px-6 font-bold text-[#040136]">Status</th>
+                                <th className="py-4 px-6 font-bold text-[#040136]">Região</th>
+                                <th className="py-4 px-6 font-bold text-[#040136]">Tipo de Imóvel</th>
+                                <th className="py-4 px-6 font-bold text-[#040136]">Faixa de Valor</th>
+                                <th className="py-4 px-6 font-bold text-[#040136]">Intenção de Compra</th>
+                                <th className="py-4 px-6 font-bold text-[#040136]">Último Contato</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -251,18 +251,23 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                         <td className="py-4 px-6">
                                             {renderStatusBadge(lead.status)}
                                         </td>
+                                        {/* Região */}
                                         <td className="py-4 px-6 text-slate-600 font-medium">
-                                            {lead.regiao || <span className="text-slate-300">-</span>}
+                                            {formatarTexto(lead.regiao)}
                                         </td>
+                                        {/* Tipo de Imóvel */}
                                         <td className="py-4 px-6 text-slate-600 font-medium">
-                                            {lead.tipo_imovel || <span className="text-slate-300">-</span>}
+                                            {formatarTexto(lead.tipo_imovel)}
                                         </td>
+                                        {/* Faixa de Valor */}
                                         <td className="py-4 px-6 font-black text-slate-800 whitespace-nowrap">
-                                            {lead.faixa_valor || <span className="text-slate-300">-</span>}
+                                            {formatarTexto(lead.faixa_valor)}
                                         </td>
+                                        {/* Intenção de Compra */}
                                         <td className="py-4 px-6 text-slate-600 max-w-xs truncate font-medium" title={lead.intencao_compra || ''}>
-                                            {lead.intencao_compra || <span className="text-slate-300">-</span>}
+                                            {formatarTexto(lead.intencao_compra)}
                                         </td>
+
                                         <td className="py-4 px-6 whitespace-nowrap font-medium text-center">
                                             {lead.ultimo_contato ? (
                                                 <div className="flex flex-col items-center justify-center gap-1">

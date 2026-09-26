@@ -70,3 +70,10 @@ export function formatarData(data: string | null | undefined): string {
     if (isNaN(d.getTime())) return '-'
     return d.toLocaleDateString('pt-BR')
 }
+
+export function formatarTexto(texto: string | null | undefined): string {
+    if (!texto) return '-'
+    const trimmed = texto.trim()
+    if (!trimmed) return '-'
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
+}

@@ -44,7 +44,7 @@ export default function Dashboard() {
             <main className="flex-1 w-full flex flex-col">
                 {/* Alerta de leads que precisam de contato (Fundo azul #040136) */}
                 <AlertaOperacional leadsAtencaoCount={leadsAtencaoCount} />
-                
+
 
                 {/* INDICADORES (Fundo Branco) */}
                 <section className="bg-white py-12 md:py-16 border-b border-slate-200/80">
@@ -60,12 +60,12 @@ export default function Dashboard() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             {/*Leads por origem em gráfico */}
                             <LeadsPorOrigemCard dados={LeadsPorOrigem} totalLeads={totalLeadsOrigem || leads.length} />
-                             <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
+                            <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
                         </div>
 
                         {/* Insights Operacionais (Direto, sem buzzwords) */}
                         <InsightsOperacionais leadsAtencaoCount={leadsAtencaoCount} />
-                        
+
                     </div>
                 </section>
 

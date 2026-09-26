@@ -220,6 +220,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                 <th className="py-4 px-6 font-bold text-[#040136]">Tipo de Imóvel</th>
                                 <th className="py-4 px-6 font-bold text-[#040136]">Faixa de Valor</th>
                                 <th className="py-4 px-6 font-bold text-[#040136]">Intenção de Compra</th>
+                                <th className="py-4 px-6 font-bold text-[#040136]">Último Contato</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -259,6 +260,9 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                         </td>
                                         <td className="py-4 px-6 text-slate-600 max-w-xs truncate font-medium" title={lead.intencao_compra || ''}>
                                             {lead.intencao_compra || <span className="text-slate-300">-</span>}
+                                        </td>
+                                        <td className="py-4 px-6 text-slate-600 max-w-xs truncate font-medium" title={lead.ultimo_contato || ''}>
+                                            {lead.ultimo_contato || <span className="text-slate-300">-</span>}
                                         </td>
                                     </tr>
                                 ))

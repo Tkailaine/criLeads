@@ -73,8 +73,9 @@ export default function Dashboard() {
                             <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
                         </div>
 
-                        {/* Insights Operacionais (Direto, sem buzzwords) */}
-                        <InsightsOperacionais leadsAtencaoCount={leadsAtencaoCount} />
+                        {/* Insights Operacionais */}
+                        <InsightsOperacionais leadsAtencaoCount={leadsAtencaoCount} leadsPorOrigem={LeadsPorOrigem} qualificacaoPorOrigem={LeadsQualificadosOrigem} />
+
 
                     </div>
                 </section>

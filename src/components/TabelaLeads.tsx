@@ -1,6 +1,8 @@
 import type { Lead } from '../services/leads'
 import { useState } from 'react'
 import { formatarOrigem, formatarStatus, formatarData } from '../utils/formatters'
+import { classificarAcompanhamento, calcularDiasSemContato } from '../utils/acompanhamento'
+
 
 type TabelaLeadsProps = {
     leads: Lead[]
@@ -213,14 +215,14 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                     <table className="w-full text-left text-xs text-slate-700">
                         <thead className="bg-[#F8F9FB] text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200/80">
                             <tr>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Lead / Contato</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Origem</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Status</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Região</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Tipo de Imóvel</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Faixa de Valor</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Intenção de Compra</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Último Contato</th>
+                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Lead / Contato</th>
+                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Origem</th>
+                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Status</th>
+                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Região</th>
+                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Tipo de Imóvel</th>
+                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Faixa de Valor</th>
+                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Intenção de Compra</th>
+                                <th className="py-4 px-6 font-bold text-[#040136] text-center">Último Contato</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -261,9 +263,38 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                         <td className="py-4 px-6 text-slate-600 max-w-xs truncate font-medium" title={lead.intencao_compra || ''}>
                                             {lead.intencao_compra || <span className="text-slate-300">-</span>}
                                         </td>
-                                        <td className="py-4 px-6 text-slate-600 whitespace-nowrap font-medium">
-                                            {lead.ultimo_contato ? formatarData(lead.ultimo_contato) : <span className="text-slate-300">-</span>}
+                                        <td className="py-4 px-6 whitespace-nowrap font-medium text-center">
+                                            {lead.ultimo_contato ? (
+                                                <div className="flex flex-col items-center justify-center gap-1">
+                                                    <span className="text-slate-700 text-sm font-semibold">
+                                                        {formatarData(lead.ultimo_contato)}
+                                                    </span>
+                                                    {(() => {
+                                                        const statusAcomp = classificarAcompanhamento(lead.ultimo_contato)
+                                                        const dias = calcularDiasSemContato(lead.ultimo_contato)
+
+                                                        if (statusAcomp === 'atencao' && lead.status !== 'perdido') {
+                                                            return (
+                                                                <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200">
+                                                                    {dias}d sem contato
+                                                                </span>
+                                                            )
+                                                        }
+                                                        if (statusAcomp === 'perdido' || (dias && dias >= 10)) {
+                                                            return (
+                                                                <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full border border-red-200">
+                                                                    +10d sem contato
+                                                                </span>
+                                                            )
+                                                        }
+                                                        return null
+                                                    })()}
+                                                </div>
+                                            ) : (
+                                                <span className="text-slate-300">-</span>
+                                            )}
                                         </td>
+
 
                                     </tr>
                                 ))

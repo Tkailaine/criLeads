@@ -15,7 +15,11 @@ export type Lead = {
     tipo_imovel: string | null,
     ultimo_contato: string | null,
     prioridade: string | null,
-    mensagem_sugerida: string | null
+    mensagem_sugerida: string | null,
+    analise_comercial?: {
+        resumo?: string | null,
+        proxima_acao?: string | null
+    } | string | null
 }
 //Função para buscar os leads no supabase, ordena por data de criação mais recente.
 export async function buscarLeads() {

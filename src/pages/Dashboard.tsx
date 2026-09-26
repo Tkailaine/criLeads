@@ -4,24 +4,13 @@ import { buscarLeads, type Lead } from '../services/leads'
 import Indicadores from '../components/Indicadores'
 import TabelaLeads from '../components/TabelaLeads'
 import { formatarOrigem, formatarPercentual } from '../utils/formatters'
+import FormularioLead from '../components/SimuladorLead'
+
 
 export default function Dashboard() {
     const [leads, setLeads] = useState<Lead[]>([])
     const [LeadsPorOrigem, setLeadsPorOrigem] = useState<LeadsPorOrigem[]>([])
     const [LeadsQualificadosOrigem, setLeadsQualificadosOrigem] = useState<QualificacaoPorOrigem[]>([])
-
-    // Estado do formulário de simulação
-    const [simulacaoForm, setSimulacaoForm] = useState({
-        nome: '',
-        telefone: '',
-        texto_interesse: ''
-    })
-    const [simulacaoResultado, setSimulacaoResultado] = useState<{
-        processado: boolean;
-        tipo?: string;
-        regiao?: string;
-        intencao?: string;
-    } | null>(null)
 
     useEffect(() => {
         async function carregarLeads() {
@@ -45,21 +34,10 @@ export default function Dashboard() {
     const totalLeadsOrigem = LeadsPorOrigem.reduce((acc, item) => acc + Number(item.total_leads || 0), 0)
     const leadsAtencaoCount = leads.filter(l => l.status === 'novo' || l.prioridade === 'alta').length
 
-    const handleSimular = (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!simulacaoForm.texto_interesse && !simulacaoForm.nome) return
-
-        setSimulacaoResultado({
-            processado: true,
-            tipo: simulacaoForm.texto_interesse.toLowerCase().includes('casa') ? 'Casa em Condomínio' : 'Apartamento Alto Padrão',
-            regiao: simulacaoForm.texto_interesse.toLowerCase().includes('brava') ? 'Praia Brava' : 'Meia Praia, Itapema',
-            intencao: 'Investimento / Compra Imediata'
-        })
-    }
 
     return (
         <div className="min-h-screen bg-white text-[#040136] flex flex-col font-sans antialiased selection:bg-[#EE4C01]/20 selection:text-[#EE4C01]">
-            
+
             {/* 1. HEADER (Fundo Branco com a Logo Original da CRI) */}
             <header className="bg-white border-b border-slate-200/80 sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-6 sm:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -89,7 +67,7 @@ export default function Dashboard() {
             </header>
 
             <main className="flex-1 w-full flex flex-col">
-                
+
                 {/* 2. ALERTA OPERACIONAL (Fundo Azul #040136 - Foco em Ação, sem altura excessiva) */}
                 <section className="bg-[#040136] text-white py-8 md:py-10 border-b border-[#040136]">
                     <div className="max-w-7xl mx-auto px-6 sm:px-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -101,8 +79,8 @@ export default function Dashboard() {
                                 </span>
                             </div>
                             <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
-                                {leadsAtencaoCount > 0 
-                                    ? `${leadsAtencaoCount} leads precisam de contato` 
+                                {leadsAtencaoCount > 0
+                                    ? `${leadsAtencaoCount} leads precisam de contato`
                                     : 'Nenhum lead com contato pendente'}
                             </h2>
                             <p className="text-xs md:text-sm text-slate-300 font-normal">
@@ -131,9 +109,9 @@ export default function Dashboard() {
                 {/* 4. LEADS POR ORIGEM & QUALIFICAÇÃO + INSIGHTS (Fundo Claro #F8F9FB) */}
                 <section className="bg-[#F8F9FB] py-12 md:py-16 border-b border-slate-200/80">
                     <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
-                        
+
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            
+
                             {/* Leads por Origem */}
                             <div className="bg-white rounded-2xl border border-slate-200/80 p-8 space-y-6 shadow-xs">
                                 <div className="flex items-baseline justify-between border-b border-slate-100 pb-4">
@@ -155,10 +133,10 @@ export default function Dashboard() {
                                         <p className="text-xs text-slate-400 italic py-4 text-center">Nenhum dado disponível</p>
                                     ) : (
                                         LeadsPorOrigem.map((item, idx) => {
-                                            const percent = totalLeadsOrigem > 0 
-                                                ? Math.round((Number(item.total_leads) / totalLeadsOrigem) * 100) 
+                                            const percent = totalLeadsOrigem > 0
+                                                ? Math.round((Number(item.total_leads) / totalLeadsOrigem) * 100)
                                                 : 0
-                                            
+
                                             const isWhatsapp = item.origem.toLowerCase().includes('whatsapp')
                                             const barColor = isWhatsapp ? 'bg-emerald-600' : idx % 2 === 0 ? 'bg-[#040136]' : 'bg-[#EE4C01]'
 
@@ -284,88 +262,8 @@ export default function Dashboard() {
                             </p>
                         </div>
 
-                        <form onSubmit={handleSimular} className="space-y-5 max-w-4xl">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                {/* Nome */}
-                                <div className="space-y-1.5">
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
-                                        Nome
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Ex: Carlos Eduardo Silveira"
-                                        value={simulacaoForm.nome}
-                                        onChange={(e) => setSimulacaoForm({ ...simulacaoForm, nome: e.target.value })}
-                                        className="w-full bg-white text-[#040136] font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#EE4C01]"
-                                    />
-                                </div>
-
-                                {/* Telefone */}
-                                <div className="space-y-1.5">
-                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
-                                        Telefone / WhatsApp
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Ex: (47) 99123-4567"
-                                        value={simulacaoForm.telefone}
-                                        onChange={(e) => setSimulacaoForm({ ...simulacaoForm, telefone: e.target.value })}
-                                        className="w-full bg-white text-[#040136] font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#EE4C01]"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Mensagem / Texto de Interesse */}
-                            <div className="space-y-1.5">
-                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300">
-                                    Mensagem de Interesse
-                                </label>
-                                <textarea
-                                    rows={3}
-                                    placeholder="Ex: Tenho interesse em apartamento de 3 suítes em Meia Praia até R$ 3 milhões para investimento."
-                                    value={simulacaoForm.texto_interesse}
-                                    onChange={(e) => setSimulacaoForm({ ...simulacaoForm, texto_interesse: e.target.value })}
-                                    className="w-full bg-white text-[#040136] font-semibold text-sm rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-[#EE4C01] resize-none"
-                                ></textarea>
-                            </div>
-
-                            <div className="flex justify-end pt-1">
-                                <button
-                                    type="submit"
-                                    className="bg-[#EE4C01] hover:bg-[#D84401] text-white font-black text-xs md:text-sm uppercase tracking-wider px-8 py-3.5 rounded-xl transition-all duration-200 cursor-pointer shadow-md hover:shadow-lg self-stretch sm:self-auto text-center"
-                                >
-                                    Processar lead
-                                </button>
-                            </div>
-                        </form>
-
-                        {/* Resultado Estruturado */}
-                        {simulacaoResultado && (
-                            <div className="max-w-4xl p-6 rounded-2xl bg-white/10 border border-white/20 space-y-4">
-                                <div className="flex items-center justify-between border-b border-white/15 pb-3">
-                                    <span className="text-xs font-black uppercase tracking-widest text-white">
-                                        Dados Identificados
-                                    </span>
-                                    <span className="text-xs font-bold text-emerald-400 bg-emerald-950/60 px-3 py-0.5 rounded-full border border-emerald-500/30">
-                                        Classificado
-                                    </span>
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                                    <div>
-                                        <span className="text-slate-400 block mb-0.5 font-medium">Tipo de Imóvel</span>
-                                        <span className="font-black text-white text-sm">{simulacaoResultado.tipo}</span>
-                                    </div>
-                                    <div>
-                                        <span className="text-slate-400 block mb-0.5 font-medium">Região</span>
-                                        <span className="font-black text-white text-sm">{simulacaoResultado.regiao}</span>
-                                    </div>
-                                    <div>
-                                        <span className="text-slate-400 block mb-0.5 font-medium">Intenção de Compra</span>
-                                        <span className="font-black text-white text-sm">{simulacaoResultado.intencao}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                        {/*Formulário para testar o processamento do lead via webhook */}
+                        <FormularioLead />
                     </div>
                 </section>
 

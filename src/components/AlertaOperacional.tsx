@@ -21,7 +21,7 @@ export default function AlertaOperacional({ leadsAtencaoCount, onVerLeadsClick }
                             : 'Nenhum lead com contato pendente'}
                     </h2>
                     <p className="text-xs md:text-sm text-slate-300 font-normal">
-                        Último contato há mais de 10 dias ou leads recém-cadastrados aguardando retorno.
+                        Último contato quase 10 dias, leads recém-cadastrados ou com prioridade alta aguardando retorno.
                     </p>
                 </div>
 

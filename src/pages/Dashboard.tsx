@@ -8,6 +8,7 @@ import FormularioLead from '../components/SimuladorLead'
 import AlertaOperacional from '../components/AlertaOperacional'
 import QualificacaoPorOrigemCard from '../components/QualificacaoPorOrigemCard'
 import InsightsOperacionais from '../components/InsightsOperacionais'
+import { classificarAcompanhamento } from '../utils/acompanhamento'
 
 
 export default function Dashboard() {
@@ -35,7 +36,16 @@ export default function Dashboard() {
     }, [])
 
     const totalLeadsOrigem = LeadsPorOrigem.reduce((acc, item) => acc + Number(item.total_leads || 0), 0)
-    const leadsAtencaoCount = leads.filter(l => l.status === 'novo' || l.prioridade === 'alta').length
+    const leadsAtencaoCount = leads.filter(l => {
+        //Não considera leads perdidos para alerta de atenção, apenas os novos, prioridade alta e sem contato por quase 10 dias
+        if (l.status === 'perdido') return false
+        const nivelAcompanhamento = classificarAcompanhamento(l.ultimo_contato)
+        return (
+            l.status === 'novo' ||
+            l.prioridade === 'alta' ||
+            nivelAcompanhamento === 'atencao'
+        )
+    }).length
 
 
     return (

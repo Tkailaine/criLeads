@@ -238,7 +238,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                 </tr>
                             ) : (
                                 leadsFiltrados.map((lead) => (
-                                    <tr key={lead.id} onClick={() => setLeadSelecionado(lead)} className="hover:bg-slate-50/70 transition-colors">
+                                    <tr key={lead.id} onClick={() => setLeadSelecionado(lead)} className="hover:bg-[#EE4C01]/10 cursor-pointer transition-colors">
                                         <td className="py-4 px-6">
                                             <div className="font-bold text-[#040136] text-sm">
                                                 {lead.nome}

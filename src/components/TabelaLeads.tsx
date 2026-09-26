@@ -24,6 +24,10 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
     const faixasValor = [...new Set(leads.map((lead) => lead.faixa_valor).filter((item): item is string => Boolean(item)))]
     const regioes = [...new Set(leads.map((lead) => lead.regiao).filter((item): item is string => Boolean(item)))]
 
+    //Paginação da tabela de leads (10 por página)
+    const [paginaAtual, setPaginaAtual] = useState(1)
+    const itensPorPagina = 10
+
     // Filtra leads com base nos filtros selecionados mantendo valores internos
     const leadsFiltrados = leads.filter((lead) => {
         const correspondeStatus = !filtroStatus || lead.status === filtroStatus
@@ -41,12 +45,21 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
         )
     })
 
+    //Calcula o total de páginas e fatia os leads para a página atual
+    const totalItens = leadsFiltrados.length
+    const totalPaginas = Math.ceil(totalItens / itensPorPagina) || 1
+    const inicioIndex = (paginaAtual - 1) * itensPorPagina
+    const fimIndex = Math.min(inicioIndex + itensPorPagina, totalItens)
+    const leadsPaginados = leadsFiltrados.slice(inicioIndex, fimIndex)
+
+    //Limpa todos os filtros e volta para a primeira página
     const limparFiltros = () => {
         setFiltroStatus('')
         setFiltroOrigem('')
         setFiltroIntencao('')
         setFiltroFaixaValor('')
         setFiltroRegiao('')
+        setPaginaAtual(1)
     }
 
     const temFiltroAtivo = Boolean(filtroStatus || filtroOrigem || filtroIntencao || filtroFaixaValor || filtroRegiao)
@@ -125,7 +138,10 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                     </label>
                     <select
                         value={filtroStatus}
-                        onChange={(e) => setFiltroStatus(e.target.value)}
+                        onChange={(e) => {
+                            setFiltroStatus(e.target.value)
+                            setPaginaAtual(1)
+                        }}
                         className="w-full bg-white border border-slate-200 text-xs font-medium text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#040136]"
                     >
                         <option value="">Todos</option>
@@ -143,7 +159,10 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                     </label>
                     <select
                         value={filtroOrigem}
-                        onChange={(e) => setFiltroOrigem(e.target.value)}
+                        onChange={(e) => {
+                            setFiltroOrigem(e.target.value)
+                            setPaginaAtual(1)
+                        }}
                         className="w-full bg-white border border-slate-200 text-xs font-medium text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#040136]"
                     >
                         <option value="">Todas</option>
@@ -162,7 +181,10 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                     </label>
                     <select
                         value={filtroIntencao}
-                        onChange={(e) => setFiltroIntencao(e.target.value)}
+                        onChange={(e) => {
+                            setFiltroIntencao(e.target.value)
+                            setPaginaAtual(1)
+                        }}
                         className="w-full bg-white border border-slate-200 text-xs font-medium text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#040136]"
                     >
                         <option value="">Todas</option>
@@ -181,7 +203,10 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                     </label>
                     <select
                         value={filtroFaixaValor}
-                        onChange={(e) => setFiltroFaixaValor(e.target.value)}
+                        onChange={(e) => {
+                            setFiltroFaixaValor(e.target.value)
+                            setPaginaAtual(1)
+                        }}
                         className="w-full bg-white border border-slate-200 text-xs font-medium text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#040136]"
                     >
                         <option value="">Todas</option>
@@ -200,7 +225,10 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                     </label>
                     <select
                         value={filtroRegiao}
-                        onChange={(e) => setFiltroRegiao(e.target.value)}
+                        onChange={(e) => {
+                            setFiltroRegiao(e.target.value)
+                            setPaginaAtual(1)
+                        }}
                         className="w-full bg-white border border-slate-200 text-xs font-medium text-slate-700 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#040136]"
                     >
                         <option value="">Todas</option>
@@ -230,14 +258,16 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {leadsFiltrados.length === 0 ? (
+                            {/*Verifica se tem leads filtrados para exibir*/}
+                            {leadsPaginados.length === 0 ? (
                                 <tr>
                                     <td colSpan={8} className="py-14 text-center text-slate-400">
                                         Nenhum lead encontrado com os filtros selecionados.
                                     </td>
                                 </tr>
                             ) : (
-                                leadsFiltrados.map((lead) => (
+                                /*Renderiza apenas os leads da página atual*/
+                                leadsPaginados.map((lead) => (
                                     <tr key={lead.id} onClick={() => setLeadSelecionado(lead)} className="hover:bg-[#EE4C01]/10 cursor-pointer transition-colors">
                                         <td className="py-4 px-6">
                                             <div className="font-bold text-[#040136] text-sm">
@@ -310,6 +340,43 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                             )}
                         </tbody>
                     </table>
+
+                    {/*Barra de controle de paginação*/}
+                    {totalItens > 0 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-slate-200/80 bg-[#F8F9FB]/50 text-xs">
+                            <span className="text-slate-500 font-medium">
+                                Mostrando <strong className="text-[#040136]">{inicioIndex + 1}</strong> a <strong className="text-[#040136]">{fimIndex}</strong> de <strong className="text-[#040136]">{totalItens}</strong> leads
+                            </span>
+
+                            <div className="flex items-center gap-2">
+                                {/*Botão para página anterior*/}
+                                <button
+                                    type="button"
+                                    onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
+                                    disabled={paginaAtual === 1}
+                                    className="px-3.5 py-2 rounded-xl font-bold bg-white text-[#040136] border border-slate-200 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                                >
+                                    Anterior
+                                </button>
+
+                                {/*Indicador de página atual e total*/}
+                                <span className="font-bold text-[#040136] px-2">
+                                    {paginaAtual} de {totalPaginas}
+                                </span>
+
+                                {/*Botão para próxima página*/}
+                                <button
+                                    type="button"
+                                    onClick={() => setPaginaAtual((prev) => Math.min(prev + 1, totalPaginas))}
+                                    disabled={paginaAtual === totalPaginas}
+                                    className="px-3.5 py-2 rounded-xl font-bold bg-white text-[#040136] border border-slate-200 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                                >
+                                    Próximo
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Abre modal para o lead selecionado, irá rendenizar todas as informações e mensagem personalizada para o lead */}
                     {leadSelecionado && (
                         <ModalLead

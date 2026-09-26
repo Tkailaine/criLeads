@@ -1,6 +1,6 @@
 import type { Lead } from '../services/leads'
 import { useState } from 'react'
-import { formatarOrigem, formatarStatus, formatarData, formatarTexto } from '../utils/formatters'
+import { formatarOrigem, formatarStatus, formatarData, formatarTexto, formatarIntencao } from '../utils/formatters'
 import { classificarAcompanhamento, calcularDiasSemContato } from '../utils/acompanhamento'
 import ModalLead from './ModalLead'
 
@@ -19,11 +19,11 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
 
     const [leadSelecionado, setLeadSelecionado] = useState<Lead | null>(null)
 
-    const statusList = [...new Set(leads.map((lead) => lead.status).filter((item): item is string => Boolean(item)))]
-    const origens = [...new Set(leads.map((lead) => lead.origem).filter((item): item is string => Boolean(item)))]
-    const intencoes = [...new Set(leads.map((lead) => lead.intencao_compra).filter((item): item is string => Boolean(item)))]
-    const faixasValor = [...new Set(leads.map((lead) => lead.faixa_valor).filter((item): item is string => Boolean(item)))]
-    const regioes = [...new Set(leads.map((lead) => lead.regiao).filter((item): item is string => Boolean(item)))]
+    const statusList = [...new Set(leads.map((lead) => lead.status?.toLowerCase().trim()).filter((item): item is string => Boolean(item)))]
+    const origens = [...new Set(leads.map((lead) => lead.origem?.toLowerCase().trim()).filter((item): item is string => Boolean(item)))]
+    const intencoes = [...new Set(leads.map((lead) => lead.intencao_compra?.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '')).filter((item): item is string => Boolean(item)))]
+    const faixasValor = [...new Set(leads.map((lead) => lead.faixa_valor?.toLowerCase().trim()).filter((item): item is string => Boolean(item)))]
+    const regioes = [...new Set(leads.map((lead) => lead.regiao?.toLowerCase().trim()).filter((item): item is string => Boolean(item)))]
 
     //Paginação da tabela de leads (10 por página)
     const [paginaAtual, setPaginaAtual] = useState(1)
@@ -31,12 +31,11 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
 
     // Filtra leads com base nos filtros selecionados mantendo valores internos
     const leadsFiltrados = leads.filter((lead) => {
-        const correspondeStatus = !filtroStatus || lead.status === filtroStatus
-
-        const correspondeOrigem = !filtroOrigem || lead.origem === filtroOrigem
-        const correspondeIntencao = !filtroIntencao || lead.intencao_compra === filtroIntencao
-        const correspondeFaixaValor = !filtroFaixaValor || lead.faixa_valor === filtroFaixaValor
-        const correspondeRegiao = !filtroRegiao || lead.regiao === filtroRegiao
+        const correspondeStatus = !filtroStatus || lead.status?.toLowerCase().trim() === filtroStatus
+        const correspondeOrigem = !filtroOrigem || lead.origem?.toLowerCase().trim() === filtroOrigem
+        const correspondeIntencao = !filtroIntencao || lead.intencao_compra?.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '') === filtroIntencao
+        const correspondeFaixaValor = !filtroFaixaValor || lead.faixa_valor?.toLowerCase().trim() === filtroFaixaValor
+        const correspondeRegiao = !filtroRegiao || lead.regiao?.toLowerCase().trim() === filtroRegiao
 
         return (
             correspondeStatus &&
@@ -183,7 +182,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                         <option value="">Todas</option>
                         {intencoes.map((intencao) => (
                             <option key={intencao} value={intencao}>
-                                {intencao}
+                                {formatarIntencao(intencao)}
                             </option>
                         ))}
                     </select>
@@ -205,7 +204,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                         <option value="">Todas</option>
                         {faixasValor.map((faixa) => (
                             <option key={faixa} value={faixa}>
-                                {faixa}
+                                {formatarTexto(faixa)}
                             </option>
                         ))}
                     </select>
@@ -227,7 +226,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                         <option value="">Todas</option>
                         {regioes.map((regiao) => (
                             <option key={regiao} value={regiao}>
-                                {regiao}
+                                {formatarTexto(regiao)}
                             </option>
                         ))}
                     </select>
@@ -292,7 +291,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                         </td>
                                         {/* Intenção de Compra */}
                                         <td className="py-4 px-6 text-slate-600 max-w-xs truncate font-medium" title={lead.intencao_compra || ''}>
-                                            {formatarTexto(lead.intencao_compra)}
+                                            {formatarIntencao(lead.intencao_compra)}
                                         </td>
 
                                         <td className="py-4 px-6 whitespace-nowrap font-medium text-center">

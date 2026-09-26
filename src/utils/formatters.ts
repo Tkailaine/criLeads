@@ -35,7 +35,26 @@ export const PRIORIDADE_LABEL: Record<string, string> = {
     media: 'Média',
     baixa: 'Baixa'
 }
+export const INTENCAO_LABEL: Record<string, string> = {
+    alta: 'Alta',
+    media: 'Média',
+    média: 'Média',
+    baixa: 'Baixa',
+    pesquisando: 'Pesquisando',
+    nao_identificada: 'Não identificada',
+    não_identificada: 'Não identificada',
+    nao_identificado: 'Não identificada',
+    não_identificado: 'Não identificada'
+}
 
+export function formatarIntencao(intencao: string | null | undefined): string {
+    if (!intencao) return '-'
+
+    const chave = intencao.toLowerCase().trim()
+    const chaveSemAcento = chave.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+    return INTENCAO_LABEL[chave] || INTENCAO_LABEL[chaveSemAcento] || formatarTexto(intencao)
+}
 export function formatarOrigem(origem: string | null | undefined, uppercase = false): string {
     if (!origem) return '-'
     const chave = origem.toLowerCase().trim()

@@ -1,5 +1,5 @@
 import type { Lead } from '../services/leads'
-import { formatarOrigem, formatarTexto } from '../utils/formatters'
+import { formatarOrigem, formatarTexto, formatarIntencao } from '../utils/formatters'
 
 type ModalLeadProps = {
     lead: Lead
@@ -65,7 +65,7 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
                             Intenção
                         </p>
                         <p className="text-sm font-bold text-[#040136] mt-1">
-                            {formatarTexto(lead.intencao_compra)}
+                            {formatarIntencao(lead.intencao_compra)}
                         </p>
                     </div>
 

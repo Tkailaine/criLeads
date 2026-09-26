@@ -44,20 +44,6 @@ export default function FormularioLead() {
     }
 
     return (
-        <section className="bg-[#040136] text-white py-12 md:py-16 border-b border-[#040136]">
-            <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
-                <div className="max-w-2xl space-y-2">
-                    <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#EE4C01]">
-                        Entrada de Oportunidades
-                    </span>
-                    <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
-                        Cadastrar novo lead
-                    </h2>
-                    <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-normal">
-                        Preencha as informações para registrar o contato e disparar o fluxo de atendimento.
-                    </p>
-                </div>
-
                 <form onSubmit={handleSubmit} className="space-y-5 max-w-4xl">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         {/* Nome */}
@@ -146,7 +132,5 @@ export default function FormularioLead() {
                         </button>
                     </div>
                 </form>
-            </div>
-        </section>
     )
 }

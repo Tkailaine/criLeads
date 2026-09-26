@@ -41,18 +41,18 @@ export default function Dashboard() {
         <>
 
             <main className="flex-1 w-full flex flex-col">
-                {/* Alerta de leads que precisam de contato */}
+                {/* Alerta de leads que precisam de contato (Fundo azul #040136) */}
                 <AlertaOperacional leadsAtencaoCount={leadsAtencaoCount} />
                 
 
-                {/* 3. INDICADORES (Fundo Branco) */}
+                {/* INDICADORES (Fundo Branco) */}
                 <section className="bg-white py-12 md:py-16 border-b border-slate-200/80">
                     <div className="max-w-7xl mx-auto px-6 sm:px-8">
                         <Indicadores leads={leads} />
                     </div>
                 </section>
 
-                {/* 4. LEADS POR ORIGEM & QUALIFICAÇÃO + INSIGHTS (Fundo Claro #F8F9FB) */}
+                {/* LEADS POR ORIGEM & QUALIFICAÇÃO + INSIGHTS (Fundo Claro #F8F9FB) */}
                 <section className="bg-[#F8F9FB] py-12 md:py-16 border-b border-slate-200/80">
                     <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
 
@@ -61,6 +61,7 @@ export default function Dashboard() {
                             <LeadsPorOrigemCard dados={LeadsPorOrigem} totalLeads={totalLeadsOrigem || leads.length} />
                              <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
                         </div>
+
                         {/* Insights Operacionais (Direto, sem buzzwords) */}
                         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 md:p-8 shadow-xs">
                             <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-4">

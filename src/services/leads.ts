@@ -21,7 +21,8 @@ export type Lead = {
         proxima_acao?: string | null
     } | string | null,
     resumo?: string | null,
-    proxima_acao?: string | null
+    proxima_acao?: string | null,
+    dados_faltantes?: string[] | null
 }
 //Função para buscar os leads no supabase, ordena por data de criação mais recente.
 export async function buscarLeads() {

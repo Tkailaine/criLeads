@@ -30,12 +30,13 @@ function pesoIntencao(intencao?: string | null): number {
     }
 }
 
-//Utiliza o resumo e a próxima ação da análise comercial gerada pela IA
+//Utiliza o resumo, a próxima ação e os dados faltantes da análise comercial gerada pela IA
 function extrairAnaliseComercial(lead: Lead) {
     const dados = lead as Record<string, any>
 
     let resumo: string | null = null
     let proxima_acao: string | null = null
+    let dados_faltantes: string[] = []
 
     //1. Busca direto no objeto caso os dados estejam em colunas na raiz do lead
     if (typeof dados.resumo === 'string' && dados.resumo.trim()) {
@@ -43,6 +44,9 @@ function extrairAnaliseComercial(lead: Lead) {
     }
     if (typeof dados.proxima_acao === 'string' && dados.proxima_acao.trim()) {
         proxima_acao = dados.proxima_acao.trim()
+    }
+    if (Array.isArray(dados.dados_faltantes)) {
+        dados_faltantes = dados.dados_faltantes.filter((item: any) => typeof item === 'string' && item.trim())
     }
 
     //2. Busca dentro de analise_comercial caso esteja agrupado em JSON ou objeto
@@ -54,6 +58,9 @@ function extrairAnaliseComercial(lead: Lead) {
             if (!proxima_acao && typeof dados.analise_comercial.proxima_acao === 'string') {
                 proxima_acao = dados.analise_comercial.proxima_acao.trim()
             }
+            if (dados_faltantes.length === 0 && Array.isArray(dados.analise_comercial.dados_faltantes)) {
+                dados_faltantes = dados.analise_comercial.dados_faltantes.filter((item: any) => typeof item === 'string' && item.trim())
+            }
         } else if (typeof dados.analise_comercial === 'string') {
             try {
                 const parsed = JSON.parse(dados.analise_comercial)
@@ -63,6 +70,9 @@ function extrairAnaliseComercial(lead: Lead) {
                     }
                     if (!proxima_acao && typeof parsed.proxima_acao === 'string') {
                         proxima_acao = parsed.proxima_acao.trim()
+                    }
+                    if (dados_faltantes.length === 0 && Array.isArray(parsed.dados_faltantes)) {
+                        dados_faltantes = parsed.dados_faltantes.filter((item: any) => typeof item === 'string' && item.trim())
                     }
                 } else if (!resumo && typeof parsed === 'string') {
                     resumo = parsed.trim()
@@ -75,9 +85,17 @@ function extrairAnaliseComercial(lead: Lead) {
         }
     }
 
+    //3. Busca dentro de qualificacao caso os dados faltantes estejam nesse grupo
+    if (dados_faltantes.length === 0 && dados.qualificacao) {
+        if (typeof dados.qualificacao === 'object' && Array.isArray(dados.qualificacao.dados_faltantes)) {
+            dados_faltantes = dados.qualificacao.dados_faltantes.filter((item: any) => typeof item === 'string' && item.trim())
+        }
+    }
+
     return {
         resumo: resumo || null,
-        proxima_acao: proxima_acao || null
+        proxima_acao: proxima_acao || null,
+        dados_faltantes: dados_faltantes
     }
 }
 
@@ -181,6 +199,25 @@ function CardPrioridadeLead({ lead, onVerLead }: CardPrioridadeLeadProps) {
                         <p className="text-xs text-slate-900 leading-relaxed font-semibold line-clamp-2" title={analise.proxima_acao}>
                             {analise.proxima_acao}
                         </p>
+                    </div>
+                )}
+
+                {/* Bloco de dados faltantes para qualificação (exibe somente se existirem itens) */}
+                {analise.dados_faltantes.length > 0 && (
+                    <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/70">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                            Dados a qualificar
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                            {analise.dados_faltantes.map((item, index) => (
+                                <span
+                                    key={index}
+                                    className="text-[10px] font-semibold bg-white text-slate-700 px-2 py-0.5 rounded-md border border-slate-200"
+                                >
+                                    {item}
+                                </span>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>

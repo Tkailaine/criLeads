@@ -3,7 +3,7 @@ import { buscarLeadsPorOrigem, buscarLeadsPercentualQualificadosOrigem, type Lea
 import { buscarLeads, type Lead } from '../services/leads'
 import Indicadores from '../components/Indicadores'
 import TabelaLeads from '../components/TabelaLeads'
-import { formatarOrigem, formatarPercentual } from '../utils/formatters'
+import LeadsPorOrigemCard from '../components/LeadsPorOrigem'
 import FormularioLead from '../components/SimuladorLead'
 import AlertaOperacional from '../components/AlertaOperacional'
 
@@ -55,112 +55,9 @@ export default function Dashboard() {
                     <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-                            {/* Leads por Origem */}
-                            <div className="bg-white rounded-2xl border border-slate-200/80 p-8 space-y-6 shadow-xs">
-                                <div className="flex items-baseline justify-between border-b border-slate-100 pb-4">
-                                    <div>
-                                        <h3 className="text-xl font-black text-[#040136] tracking-tight">
-                                            Leads por origem
-                                        </h3>
-                                        <p className="text-xs text-slate-500 mt-0.5">
-                                            De onde vêm os leads cadastrados
-                                        </p>
-                                    </div>
-                                    <span className="text-xs font-bold text-[#040136] bg-[#F4F5F8] px-3.5 py-1 rounded-lg">
-                                        Total: {totalLeadsOrigem || leads.length}
-                                    </span>
-                                </div>
-
-                                <div className="space-y-5 pt-1">
-                                    {LeadsPorOrigem.length === 0 ? (
-                                        <p className="text-xs text-slate-400 italic py-4 text-center">Nenhum dado disponível</p>
-                                    ) : (
-                                        LeadsPorOrigem.map((item, idx) => {
-                                            const percent = totalLeadsOrigem > 0
-                                                ? Math.round((Number(item.total_leads) / totalLeadsOrigem) * 100)
-                                                : 0
-
-                                            const isWhatsapp = item.origem.toLowerCase().includes('whatsapp')
-                                            const barColor = isWhatsapp ? 'bg-emerald-600' : idx % 2 === 0 ? 'bg-[#040136]' : 'bg-[#EE4C01]'
-
-                                            return (
-                                                <div key={item.origem || idx} className="space-y-2">
-                                                    <div className="flex items-center justify-between text-sm">
-                                                        <span className="font-black text-[#040136] tracking-wide">
-                                                            {formatarOrigem(item.origem, true)}
-                                                        </span>
-                                                        <div className="flex items-baseline gap-2">
-                                                            <span className="font-black text-[#040136]">{item.total_leads} leads</span>
-                                                            <span className="text-xs text-slate-400 font-semibold">({percent}%)</span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="w-full bg-[#F4F5F8] rounded-lg h-2.5 overflow-hidden">
-                                                        <div
-                                                            className={`h-2.5 rounded-lg ${barColor} transition-all duration-500`}
-                                                            style={{ width: `${Math.max(percent, 6)}%` }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Qualificação por Origem */}
-                            <div className="bg-white rounded-2xl border border-slate-200/80 p-8 space-y-6 shadow-xs">
-                                <div className="flex items-baseline justify-between border-b border-slate-100 pb-4">
-                                    <div>
-                                        <h3 className="text-xl font-black text-[#040136] tracking-tight">
-                                            Qualificação por origem
-                                        </h3>
-                                        <p className="text-xs text-slate-500 mt-0.5">
-                                            Percentual de leads qualificados por canal
-                                        </p>
-                                    </div>
-                                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100">
-                                        Taxa de Qualificação
-                                    </span>
-                                </div>
-
-                                <div className="space-y-5 pt-1">
-                                    {LeadsQualificadosOrigem.length === 0 ? (
-                                        <p className="text-xs text-slate-400 italic py-4 text-center">Nenhum dado disponível</p>
-                                    ) : (
-                                        LeadsQualificadosOrigem.map((item, idx) => {
-                                            const percent = Number(item.percentual_qualificados) || 0
-
-                                            return (
-                                                <div key={item.origem || idx} className="space-y-2">
-                                                    <div className="flex items-center justify-between text-sm">
-                                                        <span className="font-black text-[#040136] tracking-wide">
-                                                            {formatarOrigem(item.origem, true)}
-                                                        </span>
-                                                        <div className="flex items-baseline gap-2">
-                                                            <span className="text-xs text-slate-500 font-semibold">
-                                                                {item.total_qualificados} de {item.total_leads}
-                                                            </span>
-                                                            <span className="font-black text-emerald-600 text-sm">
-                                                                {formatarPercentual(percent)}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div className="w-full bg-[#F4F5F8] rounded-lg h-2.5 overflow-hidden">
-                                                        <div
-                                                            className="h-2.5 rounded-lg bg-emerald-600 transition-all duration-500"
-                                                            style={{ width: `${Math.max(percent, 6)}%` }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-                                    )}
-                                </div>
-                            </div>
-
+                            {/*Leads por origem em gráfico */}
+                            <LeadsPorOrigemCard dados={LeadsPorOrigem} totalLeads={totalLeadsOrigem || leads.length} />
                         </div>
-
                         {/* Insights Operacionais (Direto, sem buzzwords) */}
                         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 md:p-8 shadow-xs">
                             <h4 className="text-xs font-black uppercase tracking-wider text-slate-400 mb-4">

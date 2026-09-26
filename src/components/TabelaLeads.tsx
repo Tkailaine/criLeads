@@ -2,6 +2,8 @@ import type { Lead } from '../services/leads'
 import { useState } from 'react'
 import { formatarOrigem, formatarStatus, formatarData, formatarTexto } from '../utils/formatters'
 import { classificarAcompanhamento, calcularDiasSemContato } from '../utils/acompanhamento'
+import ModalLead from './ModalLead'
+
 
 
 type TabelaLeadsProps = {
@@ -14,6 +16,8 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
     const [filtroIntencao, setFiltroIntencao] = useState('')
     const [filtroFaixaValor, setFiltroFaixaValor] = useState('')
     const [filtroRegiao, setFiltroRegiao] = useState('')
+
+    const [leadSelecionado, setLeadSelecionado] = useState<Lead | null>(null)
 
     const origens = [...new Set(leads.map((lead) => lead.origem).filter((item): item is string => Boolean(item)))]
     const intencoes = [...new Set(leads.map((lead) => lead.intencao_compra).filter((item): item is string => Boolean(item)))]
@@ -228,13 +232,13 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                         <tbody className="divide-y divide-slate-100">
                             {leadsFiltrados.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="py-14 text-center text-slate-400">
+                                    <td colSpan={8} className="py-14 text-center text-slate-400">
                                         Nenhum lead encontrado com os filtros selecionados.
                                     </td>
                                 </tr>
                             ) : (
                                 leadsFiltrados.map((lead) => (
-                                    <tr key={lead.id} className="hover:bg-slate-50/70 transition-colors">
+                                    <tr key={lead.id} onClick={() => setLeadSelecionado(lead)} className="hover:bg-slate-50/70 transition-colors">
                                         <td className="py-4 px-6">
                                             <div className="font-bold text-[#040136] text-sm">
                                                 {lead.nome}
@@ -306,8 +310,17 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                             )}
                         </tbody>
                     </table>
+                    {/* Abre modal para o lead selecionado, irá rendenizar todas as informações e mensagem personalizada para o lead */}
+                    {leadSelecionado && (
+                        <ModalLead
+                            lead={leadSelecionado}
+                            onClose={() => setLeadSelecionado(null)}
+                        />
+                    )}
                 </div>
             </div>
+
+
         </div>
     )
 }

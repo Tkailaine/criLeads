@@ -6,6 +6,7 @@ import TabelaLeads from '../components/TabelaLeads'
 import LeadsPorOrigemCard from '../components/LeadsPorOrigem'
 import FormularioLead from '../components/SimuladorLead'
 import AlertaOperacional from '../components/AlertaOperacional'
+import QualificacaoPorOrigemCard from '../components/QualificacaoPorOrigemCard'
 
 
 export default function Dashboard() {
@@ -42,6 +43,7 @@ export default function Dashboard() {
             <main className="flex-1 w-full flex flex-col">
                 {/* Alerta de leads que precisam de contato */}
                 <AlertaOperacional leadsAtencaoCount={leadsAtencaoCount} />
+                
 
                 {/* 3. INDICADORES (Fundo Branco) */}
                 <section className="bg-white py-12 md:py-16 border-b border-slate-200/80">
@@ -57,6 +59,7 @@ export default function Dashboard() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             {/*Leads por origem em gráfico */}
                             <LeadsPorOrigemCard dados={LeadsPorOrigem} totalLeads={totalLeadsOrigem || leads.length} />
+                             <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
                         </div>
                         {/* Insights Operacionais (Direto, sem buzzwords) */}
                         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 md:p-8 shadow-xs">

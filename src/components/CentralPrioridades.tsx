@@ -32,30 +32,52 @@ function pesoIntencao(intencao?: string | null): number {
 
 //Utiliza o resumo e a próxima ação da análise comercial gerada pela IA
 function extrairAnaliseComercial(lead: Lead) {
-    if (!lead.analise_comercial) {
-        return { resumo: null, proxima_acao: null }
+    const dados = lead as Record<string, any>
+
+    let resumo: string | null = null
+    let proxima_acao: string | null = null
+
+    //1. Busca direto no objeto caso os dados estejam em colunas na raiz do lead
+    if (typeof dados.resumo === 'string' && dados.resumo.trim()) {
+        resumo = dados.resumo.trim()
+    }
+    if (typeof dados.proxima_acao === 'string' && dados.proxima_acao.trim()) {
+        proxima_acao = dados.proxima_acao.trim()
     }
 
-    //Tratamento caso a coluna esteja armazenada como string JSON
-    if (typeof lead.analise_comercial === 'string') {
-        try {
-            const parsed = JSON.parse(lead.analise_comercial)
-            return {
-                resumo: parsed.resumo || null,
-                proxima_acao: parsed.proxima_acao || null
+    //2. Busca dentro de analise_comercial caso esteja agrupado em JSON ou objeto
+    if (dados.analise_comercial) {
+        if (typeof dados.analise_comercial === 'object' && dados.analise_comercial !== null) {
+            if (!resumo && typeof dados.analise_comercial.resumo === 'string') {
+                resumo = dados.analise_comercial.resumo.trim()
             }
-        } catch {
-            return {
-                resumo: lead.analise_comercial,
-                proxima_acao: null
+            if (!proxima_acao && typeof dados.analise_comercial.proxima_acao === 'string') {
+                proxima_acao = dados.analise_comercial.proxima_acao.trim()
+            }
+        } else if (typeof dados.analise_comercial === 'string') {
+            try {
+                const parsed = JSON.parse(dados.analise_comercial)
+                if (typeof parsed === 'object' && parsed !== null) {
+                    if (!resumo && typeof parsed.resumo === 'string') {
+                        resumo = parsed.resumo.trim()
+                    }
+                    if (!proxima_acao && typeof parsed.proxima_acao === 'string') {
+                        proxima_acao = parsed.proxima_acao.trim()
+                    }
+                } else if (!resumo && typeof parsed === 'string') {
+                    resumo = parsed.trim()
+                }
+            } catch {
+                if (!resumo && dados.analise_comercial.trim()) {
+                    resumo = dados.analise_comercial.trim()
+                }
             }
         }
     }
 
-    //Retorna as propriedades caso já seja um objeto estruturado
     return {
-        resumo: lead.analise_comercial.resumo || null,
-        proxima_acao: lead.analise_comercial.proxima_acao || null
+        resumo: resumo || null,
+        proxima_acao: proxima_acao || null
     }
 }
 
@@ -98,7 +120,7 @@ function CardPrioridadeLead({ lead, onVerLead }: CardPrioridadeLeadProps) {
                     )}
                 </div>
 
-                {/* Detalhes do lead: status, intenção, região, tipo de imóvel e faixa de valor */}
+                {/* Detalhes do lead: status, intenção, interesse e faixa de valor */}
                 <div className="text-xs text-slate-600 space-y-1.5 font-medium pt-1 border-t border-slate-100">
                     <div className="flex items-center justify-between">
                         <span className="text-slate-400">Status:</span>
@@ -135,28 +157,28 @@ function CardPrioridadeLead({ lead, onVerLead }: CardPrioridadeLeadProps) {
                     )}
                 </div>
 
-                {/* Bloco com o resumo da análise comercial da IA (exibe somente se existir) */}
+                {/* Bloco com o resumo da análise da IA (exibe somente se existir) */}
                 {analise.resumo && (
-                    <div className="bg-[#F8F9FB] rounded-xl p-3.5 border border-slate-200/70">
+                    <div className="bg-[#F8F9FB] rounded-xl p-3 border border-slate-200/70">
                         <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                            Análise comercial
+                            Análise da IA
                         </p>
-                        <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                        <p className="text-xs text-slate-700 leading-relaxed font-medium line-clamp-2" title={analise.resumo}>
                             {analise.resumo}
                         </p>
                     </div>
                 )}
 
-                {/* Bloco com a próxima ação recomendada pela IA (exibe somente se existir) */}
+                {/* Bloco com a próxima ação recomendada (destaque visual maior para a ação comercial) */}
                 {analise.proxima_acao && (
-                    <div className="bg-amber-50/60 rounded-xl p-3.5 border border-amber-200/60">
+                    <div className="bg-amber-50/80 rounded-xl p-3 border border-amber-200/80 shadow-xs">
                         <div className="flex items-center gap-1.5 mb-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#EE4C01]" />
                             <p className="text-[10px] font-bold uppercase tracking-wider text-amber-900">
-                                Próxima ação recomendada
+                                Próxima ação
                             </p>
                         </div>
-                        <p className="text-xs text-slate-800 leading-relaxed font-semibold">
+                        <p className="text-xs text-slate-900 leading-relaxed font-semibold line-clamp-2" title={analise.proxima_acao}>
                             {analise.proxima_acao}
                         </p>
                     </div>

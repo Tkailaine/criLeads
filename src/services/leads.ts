@@ -19,7 +19,9 @@ export type Lead = {
     analise_comercial?: {
         resumo?: string | null,
         proxima_acao?: string | null
-    } | string | null
+    } | string | null,
+    resumo?: string | null,
+    proxima_acao?: string | null
 }
 //Função para buscar os leads no supabase, ordena por data de criação mais recente.
 export async function buscarLeads() {

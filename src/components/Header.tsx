@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
-//Header fixo para futuras navegações
+
+//Header com navegação entre páginas
 export default function Header() {
     const location = useLocation()
 
@@ -17,7 +18,9 @@ export default function Header() {
                     <div className="h-8 w-px bg-slate-200 hidden sm:block"></div>
                     <div>
                         <h1 className="text-xl md:text-2xl font-black text-[#040136] tracking-tight">
-                            Visão geral dos leads
+                            {location.pathname === '/atencao'
+                                ? 'Central de Atenção'
+                                : 'Visão geral dos leads'}
                         </h1>
                         <p className="text-xs md:text-sm text-slate-500 font-normal">
                             Gestão e acompanhamento da carteira de oportunidades.
@@ -25,18 +28,28 @@ export default function Header() {
                     </div>
                 </div>
 
-                {/* Navegação / Badges */}
+                {/* Navegação / Menu de Páginas */}
                 <div className="flex items-center gap-3">
                     <nav className="flex items-center gap-2">
                         <Link
                             to="/"
                             className={`text-xs font-bold px-4 py-2 rounded-xl transition-all ${
                                 location.pathname === '/'
-                                    ? 'bg-[#040136] text-white'
+                                    ? 'bg-[#040136] text-white shadow-xs'
                                     : 'text-slate-600 hover:bg-slate-100'
                             }`}
                         >
                             Dashboard
+                        </Link>
+                        <Link
+                            to="/atencao"
+                            className={`text-xs font-bold px-4 py-2 rounded-xl transition-all ${
+                                location.pathname === '/atencao'
+                                    ? 'bg-[#040136] text-white shadow-xs'
+                                    : 'text-slate-600 hover:bg-slate-100'
+                            }`}
+                        >
+                            Central de Atenção
                         </Link>
                     </nav>
 

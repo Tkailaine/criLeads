@@ -63,3 +63,10 @@ export function formatarPercentual(valor: number | string | null | undefined): s
     if (isNaN(num)) return '0%'
     return `${num.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`
 }
+
+export function formatarData(data: string | null | undefined): string {
+    if (!data) return '-'
+    const d = new Date(data)
+    if (isNaN(d.getTime())) return '-'
+    return d.toLocaleDateString('pt-BR')
+}

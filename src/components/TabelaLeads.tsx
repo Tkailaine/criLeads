@@ -1,6 +1,6 @@
 import type { Lead } from '../services/leads'
 import { useState } from 'react'
-import { formatarOrigem, formatarStatus } from '../utils/formatters'
+import { formatarOrigem, formatarStatus, formatarData } from '../utils/formatters'
 
 type TabelaLeadsProps = {
     leads: Lead[]
@@ -261,9 +261,10 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                         <td className="py-4 px-6 text-slate-600 max-w-xs truncate font-medium" title={lead.intencao_compra || ''}>
                                             {lead.intencao_compra || <span className="text-slate-300">-</span>}
                                         </td>
-                                        <td className="py-4 px-6 text-slate-600 max-w-xs truncate font-medium" title={lead.ultimo_contato || ''}>
-                                            {lead.ultimo_contato || <span className="text-slate-300">-</span>}
+                                        <td className="py-4 px-6 text-slate-600 whitespace-nowrap font-medium">
+                                            {lead.ultimo_contato ? formatarData(lead.ultimo_contato) : <span className="text-slate-300">-</span>}
                                         </td>
+
                                     </tr>
                                 ))
                             )}

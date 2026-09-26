@@ -148,11 +148,8 @@ export default function FormularioLead() {
                         className="w-full bg-white text-[#040136] font-semibold text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#EE4C01] cursor-pointer"
                     >
                         <option value="whatsapp">WhatsApp</option>
-                        <option value="portal">Portal Imobiliário</option>
-                        <option value="instagram">Instagram</option>
                         <option value="indicacao">Indicação</option>
                         <option value="site">Site Institucional</option>
-                        <option value="outro">Outro</option>
                     </select>
                 </div>
             </div>

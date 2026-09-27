@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import type { Lead } from '../services/leads'
-import { extrairDadosIA, formatarIntencao, formatarOrigem, formatarTexto } from '../utils/formatters'
+import { extrairDadosIA, formatarIntencao, formatarOrigem, formatarTexto, formatarRegiao, formatarFaixaValor } from '../utils/formatters'
 
 //Tipagem das propriedades do formulário de simulação
 type FormularioLeadProps = {
@@ -409,7 +409,7 @@ export default function FormularioLead({ onLeadCriado }: FormularioLeadProps = {
                             <div className="grid grid-cols-2 gap-2 text-xs">
                                 <div>
                                     <span className="text-[10px] text-slate-400 block">Região:</span>
-                                    <strong className="text-slate-700 font-semibold">{formatarTexto(analiseLead.regiao || leadProcessado.regiao)}</strong>
+                                    <strong className="text-slate-700 font-semibold">{formatarRegiao(analiseLead.regiao || leadProcessado.regiao)}</strong>
                                 </div>
                                 <div>
                                     <span className="text-[10px] text-slate-400 block">Tipo:</span>
@@ -417,7 +417,7 @@ export default function FormularioLead({ onLeadCriado }: FormularioLeadProps = {
                                 </div>
                                 <div>
                                     <span className="text-[10px] text-slate-400 block">Faixa de Valor:</span>
-                                    <strong className="text-slate-700 font-semibold">{formatarTexto(analiseLead.faixa_valor || leadProcessado.faixa_valor)}</strong>
+                                    <strong className="text-slate-700 font-semibold">{formatarFaixaValor(analiseLead.faixa_valor || leadProcessado.faixa_valor)}</strong>
                                 </div>
                                 <div>
                                     <span className="text-[10px] text-slate-400 block">Prazo:</span>

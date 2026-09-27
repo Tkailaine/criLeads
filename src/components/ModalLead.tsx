@@ -270,10 +270,10 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
                         disabled={!analise.mensagem_sugerida && !lead.mensagem_sugerida}
                         className="bg-[#EE4C01] hover:bg-[#D84401] disabled:opacity-40 text-white font-black text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition-colors cursor-pointer"
                     >
-                        Mandar no WhatsApp
+                        Enviar mensagem no WhatsApp
                     </button>
                 </div>
             </div>
         </div>
     )
-}
+}

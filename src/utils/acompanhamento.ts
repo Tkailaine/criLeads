@@ -1,5 +1,5 @@
 //função calcula a quantidade de dias sem interação com o lead
-export function calcularDiasSemContato(ultimoContato: string | null) {
+export function calcularDiasSemContato(ultimoContato: string | null | undefined) {
   if (!ultimoContato) {
     return null
   }
@@ -15,7 +15,7 @@ export function calcularDiasSemContato(ultimoContato: string | null) {
 //Aplica a regra de negócio de a partir de 10 dias é considerado como perdido e coloca uma margem de atenção
 //a partir de 7 dias, não marcado como perdido
 
-export function classificarAcompanhamento(ultimoContato: string | null) {
+export function classificarAcompanhamento(ultimoContato: string | null | undefined) {
   const dias = calcularDiasSemContato(ultimoContato)
 
   if (dias === null) {

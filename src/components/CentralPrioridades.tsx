@@ -1,6 +1,6 @@
 import type { Lead } from '../services/leads'
 import { calcularDiasSemContato } from '../utils/acompanhamento'
-import { formatarIntencao, formatarOrigem, formatarTexto, formatarStatus } from '../utils/formatters'
+import { formatarIntencao, formatarOrigem, formatarTexto, formatarStatus, extrairDadosIA } from '../utils/formatters'
 
 //Tipagem das propriedades recebidas pelo componente principal
 type CentralPrioridadesProps = {
@@ -30,75 +30,6 @@ function pesoIntencao(intencao?: string | null): number {
     }
 }
 
-//Utiliza o resumo, a próxima ação e os dados faltantes da análise comercial gerada pela IA
-function extrairAnaliseComercial(lead: Lead) {
-    const dados = lead as Record<string, any>
-
-    let resumo: string | null = null
-    let proxima_acao: string | null = null
-    let dados_faltantes: string[] = []
-
-    //1. Busca direto no objeto caso os dados estejam em colunas na raiz do lead
-    if (typeof dados.resumo === 'string' && dados.resumo.trim()) {
-        resumo = dados.resumo.trim()
-    }
-    if (typeof dados.proxima_acao === 'string' && dados.proxima_acao.trim()) {
-        proxima_acao = dados.proxima_acao.trim()
-    }
-    if (Array.isArray(dados.dados_faltantes)) {
-        dados_faltantes = dados.dados_faltantes.filter((item: any) => typeof item === 'string' && item.trim())
-    }
-
-    //2. Busca dentro de analise_comercial caso esteja agrupado em JSON ou objeto
-    if (dados.analise_comercial) {
-        if (typeof dados.analise_comercial === 'object' && dados.analise_comercial !== null) {
-            if (!resumo && typeof dados.analise_comercial.resumo === 'string') {
-                resumo = dados.analise_comercial.resumo.trim()
-            }
-            if (!proxima_acao && typeof dados.analise_comercial.proxima_acao === 'string') {
-                proxima_acao = dados.analise_comercial.proxima_acao.trim()
-            }
-            if (dados_faltantes.length === 0 && Array.isArray(dados.analise_comercial.dados_faltantes)) {
-                dados_faltantes = dados.analise_comercial.dados_faltantes.filter((item: any) => typeof item === 'string' && item.trim())
-            }
-        } else if (typeof dados.analise_comercial === 'string') {
-            try {
-                const parsed = JSON.parse(dados.analise_comercial)
-                if (typeof parsed === 'object' && parsed !== null) {
-                    if (!resumo && typeof parsed.resumo === 'string') {
-                        resumo = parsed.resumo.trim()
-                    }
-                    if (!proxima_acao && typeof parsed.proxima_acao === 'string') {
-                        proxima_acao = parsed.proxima_acao.trim()
-                    }
-                    if (dados_faltantes.length === 0 && Array.isArray(parsed.dados_faltantes)) {
-                        dados_faltantes = parsed.dados_faltantes.filter((item: any) => typeof item === 'string' && item.trim())
-                    }
-                } else if (!resumo && typeof parsed === 'string') {
-                    resumo = parsed.trim()
-                }
-            } catch {
-                if (!resumo && dados.analise_comercial.trim()) {
-                    resumo = dados.analise_comercial.trim()
-                }
-            }
-        }
-    }
-
-    //3. Busca dentro de qualificacao caso os dados faltantes estejam nesse grupo
-    if (dados_faltantes.length === 0 && dados.qualificacao) {
-        if (typeof dados.qualificacao === 'object' && Array.isArray(dados.qualificacao.dados_faltantes)) {
-            dados_faltantes = dados.qualificacao.dados_faltantes.filter((item: any) => typeof item === 'string' && item.trim())
-        }
-    }
-
-    return {
-        resumo: resumo || null,
-        proxima_acao: proxima_acao || null,
-        dados_faltantes: dados_faltantes
-    }
-}
-
 //Componente para exibir o estado vazio quando não há leads em prioridade
 function EstadoVazioPrioridades() {
     return (
@@ -113,7 +44,7 @@ function EstadoVazioPrioridades() {
 //Subcomponente do card do lead prioritário
 function CardPrioridadeLead({ lead, onVerLead }: CardPrioridadeLeadProps) {
     const diasSemContato = calcularDiasSemContato(lead.ultimo_contato)
-    const analise = extrairAnaliseComercial(lead)
+    const analise = extrairDadosIA(lead)
 
     return (
         <div className="bg-white rounded-2xl border border-slate-200/80 p-5 md:p-6 shadow-xs flex flex-col justify-between hover:border-[#EE4C01]/40 transition-colors">

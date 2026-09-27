@@ -7,8 +7,8 @@ import LeadsPorOrigemCard from '../components/LeadsPorOrigem'
 import FormularioLead from '../components/SimuladorLead'
 import AlertaOperacional from '../components/AlertaOperacional'
 import QualificacaoPorOrigemCard from '../components/QualificacaoPorOrigemCard'
-import InsightsOperacionais from '../components/InsightsOperacionais'
 import { classificarAcompanhamento } from '../utils/acompanhamento'
+import RecomendacoesCarteira from '../components/RecomendacoesCarteira'
 
 
 export default function Dashboard() {
@@ -52,80 +52,82 @@ export default function Dashboard() {
             <AlertaOperacional leadsAtencaoCount={leadsAtencaoCount} />
 
 
-                {/* INDICADORES (Fundo Branco) */}
-                <section className="bg-white py-12 md:py-16 border-b border-slate-200/80">
-                    <div className="max-w-7xl mx-auto px-6 sm:px-8">
-                        <Indicadores leads={leads} />
+            {/* INDICADORES (Fundo Branco) */}
+            <section className="bg-white py-12 md:py-16 border-b border-slate-200/80">
+                <div className="max-w-7xl mx-auto px-6 sm:px-8">
+                    <Indicadores leads={leads} />
+                </div>
+            </section>
+
+            {/* LEADS POR ORIGEM & QUALIFICAÇÃO + INSIGHTS (Fundo Claro #F8F9FB) */}
+            <section className="bg-[#F8F9FB] py-12 md:py-16 border-b border-slate-200/80">
+                <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/*Leads por origem em gráfico */}
+                        <LeadsPorOrigemCard dados={LeadsPorOrigem} totalLeads={totalLeadsOrigem || leads.length} />
+                        <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
                     </div>
-                </section>
 
-                {/* LEADS POR ORIGEM & QUALIFICAÇÃO + INSIGHTS (Fundo Claro #F8F9FB) */}
-                <section className="bg-[#F8F9FB] py-12 md:py-16 border-b border-slate-200/80">
-                    <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            {/*Leads por origem em gráfico */}
-                            <LeadsPorOrigemCard dados={LeadsPorOrigem} totalLeads={totalLeadsOrigem || leads.length} />
-                            <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
-                        </div>
-
-                        {/* Insights Operacionais */}
-                        <InsightsOperacionais leadsAtencaoCount={leadsAtencaoCount} leadsPorOrigem={LeadsPorOrigem} qualificacaoPorOrigem={LeadsQualificadosOrigem} />
+                    <RecomendacoesCarteira
+                        leads={leads}
+                        qualificacaoPorOrigem={LeadsQualificadosOrigem}
+                    />
 
 
+                </div>
+            </section>
+
+            {/* 5. SIMULAR NOVO LEAD (Fundo Azul #040136 - Operacional e Direto) */}
+            <section className="bg-[#040136] text-white py-12 md:py-16 border-b border-[#040136]">
+                <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
+                    <div className="max-w-2xl space-y-2">
+                        <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#EE4C01]">
+                            Simulação
+                        </span>
+                        <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
+                            Simular novo lead
+                        </h2>
+                        <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-normal">
+                            Insira uma mensagem para testar a classificação do lead.
+                        </p>
                     </div>
-                </section>
 
-                {/* 5. SIMULAR NOVO LEAD (Fundo Azul #040136 - Operacional e Direto) */}
-                <section className="bg-[#040136] text-white py-12 md:py-16 border-b border-[#040136]">
-                    <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
-                        <div className="max-w-2xl space-y-2">
-                            <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#EE4C01]">
-                                Simulação
-                            </span>
-                            <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
-                                Simular novo lead
+                    {/*Formulário para testar o processamento do lead via webhook */}
+                    <FormularioLead onLeadCriado={carregarDashboard} />
+                </div>
+            </section>
+
+            {/* 6. BASE DE LEADS (Fundo Branco) */}
+            <section className="bg-white py-12 md:py-16">
+                <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-6">
+                    {/* Cabeçalho da Base de Leads */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-[#EE4C01]" />
+                                <span className="text-[11px] font-black uppercase tracking-wider text-[#EE4C01]">
+                                    Base de Contatos
+                                </span>
+                            </div>
+                            <h2 className="text-xl md:text-2xl font-black tracking-tight text-[#040136]">
+                                Base de Leads
                             </h2>
-                            <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-normal">
-                                Insira uma mensagem para testar a classificação do lead.
+                            <p className="text-xs md:text-sm text-slate-500 font-normal">
+                                Acompanhe, filtre e gerencie todos os leads cadastrados no sistema.
                             </p>
                         </div>
 
-                        {/*Formulário para testar o processamento do lead via webhook */}
-                        <FormularioLead onLeadCriado={carregarDashboard} />
-                    </div>
-                </section>
-
-                {/* 6. BASE DE LEADS (Fundo Branco) */}
-                <section className="bg-white py-12 md:py-16">
-                    <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-6">
-                        {/* Cabeçalho da Base de Leads */}
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                            <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-[#EE4C01]" />
-                                    <span className="text-[11px] font-black uppercase tracking-wider text-[#EE4C01]">
-                                        Base de Contatos
-                                    </span>
-                                </div>
-                                <h2 className="text-xl md:text-2xl font-black tracking-tight text-[#040136]">
-                                    Base de Leads
-                                </h2>
-                                <p className="text-xs md:text-sm text-slate-500 font-normal">
-                                    Acompanhe, filtre e gerencie todos os leads cadastrados no sistema.
-                                </p>
-                            </div>
-
-                            <div className="self-start sm:self-auto">
-                                <span className="text-xs font-semibold text-slate-600 bg-[#F4F5F8] px-3.5 py-2 rounded-xl border border-slate-200 inline-block">
-                                    Total: <strong className="text-[#040136]">{leads.length}</strong> {leads.length === 1 ? 'lead' : 'leads'}
-                                </span>
-                            </div>
+                        <div className="self-start sm:self-auto">
+                            <span className="text-xs font-semibold text-slate-600 bg-[#F4F5F8] px-3.5 py-2 rounded-xl border border-slate-200 inline-block">
+                                Total: <strong className="text-[#040136]">{leads.length}</strong> {leads.length === 1 ? 'lead' : 'leads'}
+                            </span>
                         </div>
-
-                        <TabelaLeads leads={leads} />
                     </div>
-                </section>
+
+                    <TabelaLeads leads={leads} />
+                </div>
+            </section>
         </div>
     )
 }

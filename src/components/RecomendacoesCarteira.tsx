@@ -1,179 +1,168 @@
+import {
+    type LeadsPorOrigem,
+    type QualificacaoPorOrigem
+} from '../services/relatorios'
+import { formatarOrigem, formatarPercentual } from '../utils/formatters'
 import type { Lead } from '../services/leads'
-import type { QualificacaoPorOrigem } from '../services/relatorios'
-import { formatarOrigem } from '../utils/formatters'
 
-type RecomendacoesCarteiraProps = {
+//Tipagem de props dos indicadores operacionais
+type InsightsOperacionaisProps = {
     leads: Lead[]
+    leadsAtencaoCount: number
+    leadsPorOrigem: LeadsPorOrigem[]
     qualificacaoPorOrigem: QualificacaoPorOrigem[]
 }
 
-type GrupoPerfil = {
-    regiao: string
-    tipo_imovel: string
-    faixa_valor: string
-    total: number
-    altaIntencao: number
-    qualificados: number
-}
-
-export default function RecomendacoesCarteira({
+//Esse componente mostra padrões dos dados que podem ajudar na decisão comercial
+export default function InsightsOperacionais({
     leads,
+    leadsAtencaoCount,
+    leadsPorOrigem,
     qualificacaoPorOrigem
-}: RecomendacoesCarteiraProps) {
+}: InsightsOperacionaisProps) {
 
-    // Agrupa os leads por região + tipo de imóvel + faixa de valor
-    const grupos = new Map<string, GrupoPerfil>()
+    //Encontra o canal com maior taxa de qualificação
+    const maiorTaxaQualificacao = [...qualificacaoPorOrigem]
+        .sort((a, b) => b.percentual_qualificados - a.percentual_qualificados)[0]
 
-    leads.forEach((lead) => {
-        if (!lead.regiao || !lead.tipo_imovel || !lead.faixa_valor) return
+    //Encontra a região com maior concentração de leads
+    const leadsPorRegiao = leads.reduce<Record<string, number>>((acc, lead) => {
+        if (!lead.regiao) return acc
 
-        const chave = [
-            lead.regiao.trim().toLowerCase(),
-            lead.tipo_imovel.trim().toLowerCase(),
-            lead.faixa_valor.trim().toLowerCase()
-        ].join('|')
+        const regiao = lead.regiao.trim()
 
-        const grupo = grupos.get(chave)
+        acc[regiao] = (acc[regiao] || 0) + 1
 
-        if (grupo) {
-            grupo.total += 1
+        return acc
+    }, {})
 
-            if (lead.intencao_compra?.toLowerCase() === 'alta') {
-                grupo.altaIntencao += 1
-            }
+    const maiorRegiao = Object.entries(leadsPorRegiao)
+        .sort((a, b) => b[1] - a[1])[0]
 
-            if (lead.status?.toLowerCase() === 'qualificado') {
-                grupo.qualificados += 1
-            }
-        } else {
-            grupos.set(chave, {
-                regiao: lead.regiao,
-                tipo_imovel: lead.tipo_imovel,
-                faixa_valor: lead.faixa_valor,
-                total: 1,
-                altaIntencao:
-                    lead.intencao_compra?.toLowerCase() === 'alta' ? 1 : 0,
-                qualificados:
-                    lead.status?.toLowerCase() === 'qualificado' ? 1 : 0
-            })
-        }
-    })
+    //Encontra a combinação de região e tipo de imóvel mais recorrente
+    const combinacoesImoveis = leads.reduce<Record<string, number>>((acc, lead) => {
+        if (!lead.regiao || !lead.tipo_imovel) return acc
 
-    // Considera apenas padrões com pelo menos 2 leads
-    const gruposRelevantes = [...grupos.values()]
-        .filter(grupo => grupo.total >= 2)
-        .sort((a, b) => {
-            const pontuacaoA = a.altaIntencao + a.qualificados
-            const pontuacaoB = b.altaIntencao + b.qualificados
+        const combinacao = `${lead.regiao} · ${lead.tipo_imovel}`
 
-            return pontuacaoB - pontuacaoA
+        acc[combinacao] = (acc[combinacao] || 0) + 1
+
+        return acc
+    }, {})
+
+    const maiorCombinacaoImovel = Object.entries(combinacoesImoveis)
+        .sort((a, b) => b[1] - a[1])[0]
+
+    //Encontra a faixa de valor mais recorrente
+    const faixasValor = leads.reduce<Record<string, number>>((acc, lead) => {
+        if (!lead.faixa_valor) return acc
+
+        const faixa = lead.faixa_valor.trim()
+
+        if (faixa === '-') return acc
+
+        acc[faixa] = (acc[faixa] || 0) + 1
+
+        return acc
+    }, {})
+
+    const maiorFaixaValor = Object.entries(faixasValor)
+        .sort((a, b) => b[1] - a[1])[0]
+
+    //Monta as recomendações com base nos dados atuais da carteira
+    const recomendacoes = []
+
+    if (maiorTaxaQualificacao) {
+        recomendacoes.push({
+            tipo: 'CANAL COM MAIOR CONVERSÃO',
+            titulo: `${formatarOrigem(maiorTaxaQualificacao.origem)} apresenta ${formatarPercentual(maiorTaxaQualificacao.percentual_qualificados)} de qualificação.`,
+            descricao: `${maiorTaxaQualificacao.total_qualificados} de ${maiorTaxaQualificacao.total_leads} leads desse canal foram qualificados.`,
+            acao: 'Priorizar o acompanhamento dos leads desse canal e comparar o custo por lead qualificado antes de ampliar o investimento.'
         })
+    }
 
-    const principal = gruposRelevantes[0]
-
-    // Encontra a origem com maior taxa de qualificação
-    const origemPrincipal = [...qualificacaoPorOrigem]
-        .filter(item => Number(item.total_leads) >= 2)
-        .sort(
-            (a, b) =>
-                Number(b.percentual_qualificados) -
-                Number(a.percentual_qualificados)
-        )[0]
-
-    if (!principal && !origemPrincipal) {
-        return null
+    if (maiorCombinacaoImovel) {
+        recomendacoes.push({
+            tipo: 'PERFIL MAIS RECORRENTE',
+            titulo: `${maiorCombinacaoImovel[0]} concentra ${maiorCombinacaoImovel[1]} leads da carteira.`,
+            descricao: maiorFaixaValor
+                ? `A faixa de valor mais recorrente atualmente é ${maiorFaixaValor[0]}, com ${maiorFaixaValor[1]} leads.`
+                : 'Esse perfil aparece com maior frequência entre os leads cadastrados.',
+            acao: 'Usar esse perfil como referência para priorizar oportunidades, campanhas e abordagem comercial.'
+        })
     }
 
     return (
         <div className="bg-white rounded-2xl border border-slate-200/80 p-6 md:p-8 shadow-xs">
 
             <div className="mb-6">
-                <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">
-                    Recomendações da Carteira
-                </h4>
+                <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-[#EE4C01]" />
+                    <h4 className="text-xs font-black uppercase tracking-wider text-[#040136]">
+                        Recomendações da Carteira
+                    </h4>
+                </div>
 
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-500">
                     Padrões identificados nos dados para apoiar decisões comerciais.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-                {principal && (
-                    <div className="border border-slate-200 rounded-xl p-5">
+                {recomendacoes.map((recomendacao, index) => (
+                    <div
+                        key={index}
+                        className="rounded-xl border border-slate-200 bg-slate-50/40 p-5"
+                    >
+                        <div className="flex items-center gap-2 mb-4">
+                            <span
+                                className={`w-2 h-2 rounded-full ${
+                                    index === 0
+                                        ? 'bg-[#2201B2]'
+                                        : 'bg-[#EE4C01]'
+                                }`}
+                            />
 
-                        <div className="flex items-center gap-2 mb-3">
-                            <span className="w-2 h-2 rounded-full bg-[#EE4C01]" />
-
-                            <span className="text-[11px] font-black uppercase tracking-wider text-[#EE4C01]">
-                                Prioridade Comercial
+                            <span className="text-[10px] font-black uppercase tracking-wider text-[#2201B2]">
+                                {recomendacao.tipo}
                             </span>
                         </div>
 
-                        <p className="text-sm font-semibold text-[#040136] leading-relaxed">
-                            {principal.tipo_imovel} em {principal.regiao}, na faixa de{' '}
-                            {principal.faixa_valor}, concentra oportunidades relevantes
-                            na carteira atual.
+                        <h5 className="text-sm md:text-base font-bold text-[#040136] leading-relaxed mb-2">
+                            {recomendacao.titulo}
+                        </h5>
+
+                        <p className="text-xs md:text-sm text-slate-500 leading-relaxed mb-5">
+                            {recomendacao.descricao}
                         </p>
 
-                        <p className="text-xs text-slate-500 mt-3 leading-relaxed">
-                            {principal.altaIntencao} de {principal.total} leads possuem
-                            alta intenção de compra e {principal.qualificados} estão
-                            qualificados.
-                        </p>
-
-                        <div className="mt-4 pt-4 border-t border-slate-100">
-                            <p className="text-xs font-semibold text-[#040136]">
+                        <div className="border-t border-slate-200 pt-4">
+                            <p className="text-xs font-bold text-[#040136] mb-1">
                                 → Ação recomendada:
                             </p>
 
-                            <p className="text-xs text-slate-600 mt-1">
-                                Priorizar esses leads no atendimento e direcionar primeiro
-                                os imóveis desse perfil.
+                            <p className="text-xs md:text-sm text-slate-600 leading-relaxed">
+                                {recomendacao.acao}
                             </p>
                         </div>
                     </div>
-                )}
-
-                {origemPrincipal && (
-                    <div className="border border-slate-200 rounded-xl p-5">
-
-                        <div className="flex items-center gap-2 mb-3">
-                            <span className="w-2 h-2 rounded-full bg-[#2201B2]" />
-
-                            <span className="text-[11px] font-black uppercase tracking-wider text-[#2201B2]">
-                                Oportunidade de Aquisição
-                            </span>
-                        </div>
-
-                        <p className="text-sm font-semibold text-[#040136] leading-relaxed">
-                            {formatarOrigem(origemPrincipal.origem)} apresenta{' '}
-                            {Number(origemPrincipal.percentual_qualificados)
-                                .toLocaleString('pt-BR', {
-                                    maximumFractionDigits: 1
-                                })}% de qualificação na carteira atual.
-                        </p>
-
-                        <p className="text-xs text-slate-500 mt-3 leading-relaxed">
-                            São {origemPrincipal.total_qualificados} leads qualificados
-                            em um total de {origemPrincipal.total_leads} recebidos pelo
-                            canal.
-                        </p>
-
-                        <div className="mt-4 pt-4 border-t border-slate-100">
-                            <p className="text-xs font-semibold text-[#040136]">
-                                → Ação recomendada:
-                            </p>
-
-                            <p className="text-xs text-slate-600 mt-1">
-                                Acompanhar o desempenho do canal e comparar o custo por
-                                lead qualificado antes de ampliar investimentos.
-                            </p>
-                        </div>
-                    </div>
-                )}
+                ))}
 
             </div>
+
+            {leadsAtencaoCount > 0 && (
+                <div className="mt-5 rounded-xl border border-orange-200 bg-orange-50/50 px-5 py-4">
+                    <p className="text-xs md:text-sm text-slate-700">
+                        <strong className="text-[#EE4C01]">
+                            Atenção operacional:
+                        </strong>{' '}
+                        {leadsAtencaoCount} leads estão próximos do limite de 10 dias sem contato.
+                        Priorize esses contatos antes de ampliar a prospecção.
+                    </p>
+                </div>
+            )}
+
         </div>
     )
 }

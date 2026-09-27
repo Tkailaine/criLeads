@@ -1,7 +1,12 @@
 import { useState } from 'react'
 
+//Tipagem das propriedades do formulário de simulação
+type FormularioLeadProps = {
+    onLeadCriado?: () => Promise<void> | void
+}
+
 //Componente de simulação para cadastro e envio de novos leads
-export default function FormularioLead() {
+export default function FormularioLead({ onLeadCriado }: FormularioLeadProps = {}) {
     //Estados para armazenar os campos do formulário
     const [formData, setFormData] = useState({
         nome: '',
@@ -91,7 +96,7 @@ export default function FormularioLead() {
 
         try {
             //Envia os dados do lead em formato JSON via POST
-            await fetch(webhookUrl, {
+            const resposta = await fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -99,6 +104,11 @@ export default function FormularioLead() {
                     chave_idempotencia
                 })
             })
+
+            //Valida se a requisição retornou status 2xx
+            if (!resposta.ok) {
+                throw new Error(`Erro na resposta do webhook: status ${resposta.status}`)
+            }
 
             //Indica sucesso e reseta os campos do formulário
             setStatusEnvio('sucesso')
@@ -109,6 +119,11 @@ export default function FormularioLead() {
                 texto_interesse: ''
             })
             setErros({})
+
+            //Atualiza os dados do dashboard sem recarregar a página
+            if (onLeadCriado) {
+                await onLeadCriado()
+            }
         } catch (error) {
             console.error('Erro ao enviar webhook:', error)
             setStatusEnvio('erro')

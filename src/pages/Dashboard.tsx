@@ -16,23 +16,25 @@ export default function Dashboard() {
     const [LeadsPorOrigem, setLeadsPorOrigem] = useState<LeadsPorOrigem[]>([])
     const [LeadsQualificadosOrigem, setLeadsQualificadosOrigem] = useState<QualificacaoPorOrigem[]>([])
 
-    useEffect(() => {
-        async function carregarLeads() {
-            try {
-                const dados = await buscarLeads()
-                setLeads(dados ?? [])
+    //Função para buscar e atualizar todos os dados do Supabase no dashboard
+    async function carregarDashboard() {
+        try {
+            const dados = await buscarLeads()
+            setLeads(dados ?? [])
 
-                const dadosOrigem = await buscarLeadsPorOrigem()
-                setLeadsPorOrigem(dadosOrigem ?? [])
+            const dadosOrigem = await buscarLeadsPorOrigem()
+            setLeadsPorOrigem(dadosOrigem ?? [])
 
-                const dadosQualificadosOrigem = await buscarLeadsPercentualQualificadosOrigem()
-                setLeadsQualificadosOrigem(dadosQualificadosOrigem ?? [])
-            } catch (error) {
-                console.error('Erro ao carregar dados do Supabase:', error)
-            }
+            const dadosQualificadosOrigem = await buscarLeadsPercentualQualificadosOrigem()
+            setLeadsQualificadosOrigem(dadosQualificadosOrigem ?? [])
+        } catch (error) {
+            console.error('Erro ao carregar dados do Supabase:', error)
         }
+    }
 
-        carregarLeads()
+    //Carrega os dados ao montar o componente
+    useEffect(() => {
+        carregarDashboard()
     }, [])
 
     const totalLeadsOrigem = LeadsPorOrigem.reduce((acc, item) => acc + Number(item.total_leads || 0), 0)
@@ -91,7 +93,7 @@ export default function Dashboard() {
                         </div>
 
                         {/*Formulário para testar o processamento do lead via webhook */}
-                        <FormularioLead />
+                        <FormularioLead onLeadCriado={carregarDashboard} />
                     </div>
                 </section>
 

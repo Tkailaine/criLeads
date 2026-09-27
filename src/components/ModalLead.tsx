@@ -1,5 +1,5 @@
 import type { Lead } from '../services/leads'
-import { formatarOrigem, formatarTexto, formatarStatus, formatarData, formatarIntencao, extrairDadosIA } from '../utils/formatters'
+import { formatarOrigem, formatarTexto, formatarStatus, formatarData, formatarIntencao, formatarRegiao, formatarFaixaValor, extrairDadosIA } from '../utils/formatters'
 
 type ModalLeadProps = {
     lead: Lead
@@ -62,7 +62,7 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
                 {/* Cabeçalho */}
                 <div className="flex items-start justify-between p-6 border-b border-slate-200 shrink-0 bg-white">
                     <div>
-                        <p className="text-xs font-black uppercase tracking-wider text-slate-400">
+                        <p className="text-xs font-black uppercase tracking-wider text-slate-500">
                             Detalhes do Lead
                         </p>
 
@@ -116,43 +116,43 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
 
                         {/* 1. DADOS EXTRAÍDOS */}
                         <div className="rounded-2xl bg-[#F8F9FB] border border-slate-200/80 p-5 space-y-4">
-                            <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <p className="text-[11px] font-black uppercase tracking-wider text-slate-700">
                                 Dados Extraídos
                             </p>
 
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase text-slate-400">
+                                    <p className="text-[11px] font-bold uppercase text-slate-600">
                                         Região
                                     </p>
-                                    <p className="text-sm font-semibold text-slate-700 mt-0.5">
-                                        {formatarTexto(analise.regiao || lead.regiao)}
+                                    <p className="text-sm font-semibold text-slate-900 mt-0.5">
+                                        {formatarRegiao(analise.regiao || lead.regiao)}
                                     </p>
                                 </div>
 
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase text-slate-400">
+                                    <p className="text-[11px] font-bold uppercase text-slate-600">
                                         Tipo de Imóvel
                                     </p>
-                                    <p className="text-sm font-semibold text-slate-700 mt-0.5">
+                                    <p className="text-sm font-semibold text-slate-900 mt-0.5">
                                         {formatarTexto(analise.tipo_imovel || lead.tipo_imovel)}
                                     </p>
                                 </div>
 
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase text-slate-400">
+                                    <p className="text-[11px] font-bold uppercase text-slate-600">
                                         Faixa de Valor
                                     </p>
-                                    <p className="text-sm font-semibold text-slate-700 mt-0.5">
-                                        {formatarTexto(analise.faixa_valor || lead.faixa_valor)}
+                                    <p className="text-sm font-semibold text-slate-900 mt-0.5">
+                                        {formatarFaixaValor(analise.faixa_valor || lead.faixa_valor)}
                                     </p>
                                 </div>
 
                                 <div>
-                                    <p className="text-[10px] font-bold uppercase text-slate-400">
+                                    <p className="text-[11px] font-bold uppercase text-slate-600">
                                         Prazo de Compra
                                     </p>
-                                    <p className="text-sm font-semibold text-slate-700 mt-0.5">
+                                    <p className="text-sm font-semibold text-slate-900 mt-0.5">
                                         {formatarTexto(analise.prazo_compra || lead.prazo_compra)}
                                     </p>
                                 </div>
@@ -160,22 +160,22 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
 
                             {/* Características */}
                             <div className="pt-3 border-t border-slate-200/70">
-                                <p className="text-[10px] font-bold uppercase text-slate-400 mb-1.5">
+                                <p className="text-[11px] font-bold uppercase text-slate-600 mb-1.5">
                                     Características
                                 </p>
                                 {analise.caracteristicas.length > 0 ? (
                                     <div className="flex flex-wrap gap-1.5">
                                         {analise.caracteristicas.map((item, index) => (
-                                            <span
+                                             <span
                                                 key={index}
-                                                className="text-xs font-semibold bg-white text-slate-700 px-3 py-1 rounded-lg border border-slate-200"
+                                                className="text-xs font-semibold bg-white text-slate-800 px-3 py-1 rounded-lg border border-slate-200 shadow-xs"
                                             >
                                                 {item}
                                             </span>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="text-xs text-slate-400 font-medium">
+                                    <p className="text-xs text-slate-500 font-medium">
                                         Nenhuma característica específica identificada.
                                     </p>
                                 )}
@@ -184,12 +184,12 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
 
                         {/* 2. QUALIFICAÇÃO */}
                         <div className="rounded-2xl bg-[#F8F9FB] border border-slate-200/80 p-5 space-y-4">
-                            <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                            <p className="text-[11px] font-black uppercase tracking-wider text-slate-700">
                                 Qualificação
                             </p>
 
                             <div>
-                                <p className="text-[10px] font-bold uppercase text-slate-400 mb-1">
+                                <p className="text-[11px] font-bold uppercase text-slate-600 mb-1">
                                     Intenção de Compra
                                 </p>
                                 <div>
@@ -199,7 +199,7 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
 
                             {/* Dados Faltantes */}
                             <div className="pt-3 border-t border-slate-200/70">
-                                <p className="text-[10px] font-bold uppercase text-slate-400 mb-1.5">
+                                <p className="text-[11px] font-bold uppercase text-slate-600 mb-1.5">
                                     Dados Faltantes
                                 </p>
                                 {analise.dados_faltantes.length > 0 ? (
@@ -207,14 +207,14 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
                                         {analise.dados_faltantes.map((item, index) => (
                                             <span
                                                 key={index}
-                                                className="text-xs font-semibold bg-white text-amber-900 px-3 py-1 rounded-lg border border-amber-200"
+                                                className="text-xs font-semibold bg-white text-amber-900 px-3 py-1 rounded-lg border border-amber-200 shadow-xs"
                                             >
                                                 {item}
                                             </span>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="text-xs text-slate-400 font-medium">
+                                    <p className="text-xs text-slate-500 font-medium">
                                         Nenhum dado faltante relevante identificado.
                                     </p>
                                 )}
@@ -224,10 +224,10 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
                         {/* 3. ANÁLISE COMERCIAL */}
                         <div className="space-y-3">
                             <div className="rounded-2xl bg-[#F8F9FB] border border-slate-200 p-4">
-                                <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                                <p className="text-[11px] font-black uppercase tracking-wider text-slate-700 mb-1">
                                     Resumo
                                 </p>
-                                <p className="text-sm leading-relaxed text-slate-700 font-medium">
+                                <p className="text-sm leading-relaxed text-slate-800 font-medium">
                                     {analise.resumo || 'Sem resumo disponível.'}
                                 </p>
                             </div>
@@ -235,11 +235,11 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
                             <div className="rounded-2xl bg-amber-50/80 border border-amber-200/80 p-4">
                                 <div className="flex items-center gap-1.5 mb-1">
                                     <span className="w-1.5 h-1.5 rounded-full bg-[#EE4C01]" />
-                                    <p className="text-[10px] font-black uppercase tracking-wider text-amber-900">
+                                    <p className="text-[11px] font-black uppercase tracking-wider text-amber-950">
                                         Próxima Ação
                                     </p>
                                 </div>
-                                <p className="text-sm leading-relaxed text-slate-900 font-semibold">
+                                <p className="text-sm leading-relaxed text-slate-950 font-semibold">
                                     {analise.proxima_acao || 'Nenhuma próxima ação identificada.'}
                                 </p>
                             </div>
@@ -254,7 +254,7 @@ export default function ModalLead({ lead, onClose }: ModalLeadProps) {
                                 </h4>
                             </div>
 
-                            <p className="text-sm leading-relaxed text-slate-700 whitespace-pre-line font-normal">
+                            <p className="text-sm leading-relaxed text-slate-800 whitespace-pre-line font-normal">
                                 {analise.mensagem_sugerida || lead.mensagem_sugerida || 'Nenhuma mensagem personalizada disponível.'}
                             </p>
                         </div>

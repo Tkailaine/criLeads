@@ -1,6 +1,6 @@
 import type { Lead } from '../services/leads'
 import { useEffect, useState } from 'react'
-import { formatarOrigem, formatarStatus, formatarData, formatarTexto, formatarIntencao } from '../utils/formatters'
+import { formatarOrigem, formatarStatus, formatarData, formatarTexto, formatarIntencao, formatarRegiao, formatarFaixaValor } from '../utils/formatters'
 import { classificarAcompanhamento, calcularDiasSemContato } from '../utils/acompanhamento'
 import ModalLead from './ModalLead'
 
@@ -21,10 +21,19 @@ export default function TabelaLeads({ leads, onTotalFiltradosChange }: TabelaLea
     const [leadSelecionado, setLeadSelecionado] = useState<Lead | null>(null)
 
     const statusList = [...new Set(leads.map((lead) => lead.status?.toLowerCase().trim()).filter((item): item is string => Boolean(item)))]
+        .sort((a, b) => formatarStatus(a).localeCompare(formatarStatus(b), 'pt-BR'))
+
     const origens = [...new Set(leads.map((lead) => lead.origem?.toLowerCase().trim()).filter((item): item is string => Boolean(item)))]
+        .sort((a, b) => formatarOrigem(a).localeCompare(formatarOrigem(b), 'pt-BR'))
+
     const intencoes = [...new Set(leads.map((lead) => lead.intencao_compra?.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '')).filter((item): item is string => Boolean(item)))]
+        .sort((a, b) => formatarIntencao(a).localeCompare(formatarIntencao(b), 'pt-BR'))
+
     const faixasValor = [...new Set(leads.map((lead) => lead.faixa_valor?.toLowerCase().trim()).filter((item): item is string => Boolean(item)))]
+        .sort((a, b) => formatarFaixaValor(a).localeCompare(formatarFaixaValor(b), 'pt-BR'))
+
     const regioes = [...new Set(leads.map((lead) => lead.regiao?.toLowerCase().trim()).filter((item): item is string => Boolean(item)))]
+        .sort((a, b) => formatarRegiao(a).localeCompare(formatarRegiao(b), 'pt-BR'))
 
     //Paginação da tabela de leads (10 por página)
     const [paginaAtual, setPaginaAtual] = useState(1)
@@ -210,7 +219,7 @@ export default function TabelaLeads({ leads, onTotalFiltradosChange }: TabelaLea
                         <option value="">Todas</option>
                         {faixasValor.map((faixa) => (
                             <option key={faixa} value={faixa}>
-                                {formatarTexto(faixa)}
+                                {formatarFaixaValor(faixa)}
                             </option>
                         ))}
                     </select>
@@ -232,7 +241,7 @@ export default function TabelaLeads({ leads, onTotalFiltradosChange }: TabelaLea
                         <option value="">Todas</option>
                         {regioes.map((regiao) => (
                             <option key={regiao} value={regiao}>
-                                {formatarTexto(regiao)}
+                                {formatarRegiao(regiao)}
                             </option>
                         ))}
                     </select>
@@ -304,7 +313,7 @@ export default function TabelaLeads({ leads, onTotalFiltradosChange }: TabelaLea
                                                 )}
                                                 {lead.regiao && (
                                                     <span className="text-[10px] text-slate-500 font-medium">
-                                                        • {formatarTexto(lead.regiao)}
+                                                        • {formatarRegiao(lead.regiao)}
                                                     </span>
                                                 )}
                                                 {/* Badge de atenção no mobile se aplicável */}
@@ -350,7 +359,7 @@ export default function TabelaLeads({ leads, onTotalFiltradosChange }: TabelaLea
                                             </div>
                                             {lead.regiao && (
                                                 <div className="text-[11px] text-slate-500 font-normal">
-                                                    {formatarTexto(lead.regiao)}
+                                                    {formatarRegiao(lead.regiao)}
                                                 </div>
                                             )}
                                         </td>
@@ -358,7 +367,7 @@ export default function TabelaLeads({ leads, onTotalFiltradosChange }: TabelaLea
                                         {/* Faixa de Valor */}
                                         <td className="hidden sm:table-cell py-3.5 px-3 sm:px-4 text-left">
                                             <div className="font-black text-slate-800 text-xs whitespace-nowrap">
-                                                {formatarTexto(lead.faixa_valor)}
+                                                {formatarFaixaValor(lead.faixa_valor)}
                                             </div>
                                             {lead.intencao_compra && (
                                                 <div className="text-[11px] text-slate-400 font-normal truncate max-w-[130px]" title={lead.intencao_compra}>

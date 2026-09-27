@@ -33,6 +33,7 @@ export default function Dashboard() {
     const [LeadsPorOrigem, setLeadsPorOrigem] = useState<LeadsPorOrigem[]>([])
     const [LeadsQualificadosOrigem, setLeadsQualificadosOrigem] = useState<QualificacaoPorOrigem[]>([])
     const [carregando, setCarregando] = useState(true)
+    const [totalFiltrados, setTotalFiltrados] = useState<number | null>(null)
 
     // Função para buscar e atualizar todos os dados do Supabase no dashboard
     async function carregarDashboard() {
@@ -65,6 +66,8 @@ export default function Dashboard() {
         const classificacao = classificarAcompanhamento(l.ultimo_contato)
         return classificacao === 'atencao'
     }).length
+
+    const totalExibido = totalFiltrados ?? leads.length
 
 
     return (
@@ -159,7 +162,7 @@ export default function Dashboard() {
 
                         <div className="self-start sm:self-auto">
                             <span className="text-xs font-semibold text-slate-600 bg-[#F4F5F8] px-3.5 py-2 rounded-xl border border-slate-200 inline-block">
-                                Total: <strong className="text-[#040136]">{leads.length}</strong> {leads.length === 1 ? 'lead' : 'leads'}
+                                Total: <strong className="text-[#040136]">{totalExibido}</strong> {totalExibido === 1 ? 'lead' : 'leads'}
                             </span>
                         </div>
                     </div>
@@ -169,7 +172,7 @@ export default function Dashboard() {
                             <CarregandoCard texto="Carregando base de leads..." />
                         </div>
                     ) : (
-                        <TabelaLeads leads={leads} />
+                        <TabelaLeads leads={leads} onTotalFiltradosChange={setTotalFiltrados} />
                     )}
                 </div>
             </section>

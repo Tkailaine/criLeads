@@ -37,6 +37,27 @@ export const PRIORIDADE_LABEL: Record<string, string> = {
     media: 'Média',
     baixa: 'Baixa'
 }
+
+export const REGIOES_LABEL: Record<string, string> = {
+    balneario_camboriu: 'Balneário Camboriú',
+    itapema: 'Itapema',
+    praia_brava: 'Praia Brava',
+    itajai: 'Itajaí',
+    porto_belo: 'Porto Belo',
+    litoral: 'Litoral',
+    nao_identificada: 'Não identificada'
+}
+
+export const FAIXAS_VALOR_LABEL: Record<string, string> = {
+    ate_1_milhao: 'Até R$ 1 milhão',
+    de_1_a_2_milhoes: 'R$ 1 a 2 milhões',
+    de_2_a_3_milhoes: 'R$ 2 a 3 milhões',
+    de_3_a_4_milhoes: 'R$ 3 a 4 milhões',
+    de_4_a_5_milhoes: 'R$ 4 a 5 milhões',
+    acima_de_5_milhoes: 'Acima de R$ 5 milhões',
+    nao_identificada: 'Não identificada'
+}
+
 export const INTENCAO_LABEL: Record<string, string> = {
     alta: 'Alta',
     media: 'Média',
@@ -47,6 +68,22 @@ export const INTENCAO_LABEL: Record<string, string> = {
     não_identificada: 'Não identificada',
     nao_identificado: 'Não identificada',
     não_identificado: 'Não identificada'
+}
+
+export function formatarRegiao(regiao: string | null | undefined): string {
+    if (!regiao) return '-'
+
+    const chave = regiao.toLowerCase().trim()
+
+    return REGIOES_LABEL[chave] || formatarTexto(regiao)
+}
+
+export function formatarFaixaValor(faixa: string | null | undefined): string {
+    if (!faixa) return '-'
+
+    const chave = faixa.toLowerCase().trim()
+
+    return FAIXAS_VALOR_LABEL[chave] || formatarTexto(faixa)
 }
 
 export function formatarIntencao(intencao: string | null | undefined): string {

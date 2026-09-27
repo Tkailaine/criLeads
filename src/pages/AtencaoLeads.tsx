@@ -30,6 +30,7 @@ export default function AtencaoLeads() {
     const [abaSelecionada, setAbaSelecionada] = useState<'todos' | 'acompanhamento' | 'novos'>('todos')
     const [carregando, setCarregando] = useState(true)
     const [leadSelecionado, setLeadSelecionado] = useState<Lead | null>(null)
+    const [totalFiltrados, setTotalFiltrados] = useState<number | null>(null)
 
     // Busca os dados do Supabase ao carregar a página
     useEffect(() => {
@@ -76,6 +77,8 @@ export default function AtencaoLeads() {
             ? leadsNovos
             : leadsTodosAtencao
 
+    const totalExibido = totalFiltrados ?? leadsExibidos.length
+
     return (
         <div className="w-full flex flex-col">
             {/* Componente do topo informativo */}
@@ -120,7 +123,7 @@ export default function AtencaoLeads() {
 
                             <div className="self-start sm:self-auto">
                                 <span className="text-xs font-bold text-amber-900 bg-amber-50 px-3.5 py-2 rounded-xl border border-amber-200 inline-block">
-                                    Em atenção: <strong className="text-[#040136]">{leadsTodosAtencao.length}</strong> {leadsTodosAtencao.length === 1 ? 'lead' : 'leads'}
+                                    Em atenção: <strong className="text-[#040136]">{totalExibido}</strong> {totalExibido === 1 ? 'lead' : 'leads'}
                                 </span>
                             </div>
                         </div>
@@ -129,7 +132,10 @@ export default function AtencaoLeads() {
                         <div className="flex flex-wrap items-center gap-2 border-b border-slate-200/80 pb-4">
                             <button
                                 type="button"
-                                onClick={() => setAbaSelecionada('todos')}
+                                onClick={() => {
+                                    setAbaSelecionada('todos')
+                                    setTotalFiltrados(null)
+                                }}
                                 className={`text-xs font-bold px-4 py-2.5 rounded-xl transition-all cursor-pointer ${
                                     abaSelecionada === 'todos'
                                         ? 'bg-[#040136] text-white shadow-sm'
@@ -141,7 +147,10 @@ export default function AtencaoLeads() {
 
                             <button
                                 type="button"
-                                onClick={() => setAbaSelecionada('acompanhamento')}
+                                onClick={() => {
+                                    setAbaSelecionada('acompanhamento')
+                                    setTotalFiltrados(null)
+                                }}
                                 className={`text-xs font-bold px-4 py-2.5 rounded-xl transition-all cursor-pointer ${
                                     abaSelecionada === 'acompanhamento'
                                         ? 'bg-[#040136] text-white shadow-sm'
@@ -153,7 +162,10 @@ export default function AtencaoLeads() {
 
                             <button
                                 type="button"
-                                onClick={() => setAbaSelecionada('novos')}
+                                onClick={() => {
+                                    setAbaSelecionada('novos')
+                                    setTotalFiltrados(null)
+                                }}
                                 className={`text-xs font-bold px-4 py-2.5 rounded-xl transition-all cursor-pointer ${
                                     abaSelecionada === 'novos'
                                         ? 'bg-[#040136] text-white shadow-sm'
@@ -170,7 +182,7 @@ export default function AtencaoLeads() {
                                 <CarregandoCard texto="Carregando leads para acompanhamento..." />
                             </div>
                         ) : (
-                            <TabelaLeads leads={leadsExibidos} />
+                            <TabelaLeads leads={leadsExibidos} onTotalFiltradosChange={setTotalFiltrados} />
                         )}
                     </div>
                 </div>

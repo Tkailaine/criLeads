@@ -1,5 +1,5 @@
 import type { Lead } from '../services/leads'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { formatarOrigem, formatarStatus, formatarData, formatarTexto, formatarIntencao } from '../utils/formatters'
 import { classificarAcompanhamento, calcularDiasSemContato } from '../utils/acompanhamento'
 import ModalLead from './ModalLead'
@@ -8,9 +8,10 @@ import ModalLead from './ModalLead'
 
 type TabelaLeadsProps = {
     leads: Lead[]
+    onTotalFiltradosChange?: (total: number, temFiltro: boolean) => void
 }
 
-export default function TabelaLeads({ leads }: TabelaLeadsProps) {
+export default function TabelaLeads({ leads, onTotalFiltradosChange }: TabelaLeadsProps) {
     const [filtroStatus, setFiltroStatus] = useState('')
     const [filtroOrigem, setFiltroOrigem] = useState('')
     const [filtroIntencao, setFiltroIntencao] = useState('')
@@ -46,6 +47,13 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
         )
     })
 
+    const temFiltroAtivo = Boolean(filtroStatus || filtroOrigem || filtroIntencao || filtroFaixaValor || filtroRegiao)
+
+    // Notifica o componente pai sobre a quantidade de leads filtrados
+    useEffect(() => {
+        onTotalFiltradosChange?.(leadsFiltrados.length, temFiltroAtivo)
+    }, [leadsFiltrados.length, temFiltroAtivo, onTotalFiltradosChange])
+
     //Calcula o total de páginas e leads para a página atual
     const totalItens = leadsFiltrados.length
     const totalPaginas = Math.ceil(totalItens / itensPorPagina) || 1
@@ -62,8 +70,6 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
         setFiltroRegiao('')
         setPaginaAtual(1)
     }
-
-    const temFiltroAtivo = Boolean(filtroStatus || filtroOrigem || filtroIntencao || filtroFaixaValor || filtroRegiao)
 
     const renderStatusBadge = (status: string) => {
         const chave = status?.toLowerCase()

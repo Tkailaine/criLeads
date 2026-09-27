@@ -37,7 +37,7 @@ export async function buscarLeadsPorOrigem() {
 }
 
 
-{/*
+/*
     Lista os leads qualificados por origem e porcentagem através da view no supabase
     
     CREATE VIEW public.percentual_qualificados_por_origem AS
@@ -52,7 +52,7 @@ SELECT
     ) AS percentual_qualificados
 FROM public.leads
 GROUP BY origem
-ORDER BY percentual_qualificados DESC; */}
+ORDER BY percentual_qualificados DESC; */
 
 export async function buscarLeadsPercentualQualificadosOrigem(){
     const { data,  error } = await supabase.from('percentual_qualificados_por_origem').select('*')

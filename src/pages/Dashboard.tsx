@@ -69,12 +69,7 @@ export default function Dashboard() {
                         <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
                     </div>
 
-                    <RecomendacoesCarteira
-                        leads={leads}
-                        qualificacaoPorOrigem={LeadsQualificadosOrigem}
-                    />
-
-
+                    <RecomendacoesCarteira leads={leads} leadsAtencaoCount={leadsAtencaoCount} leadsPorOrigem={LeadsPorOrigem} qualificacaoPorOrigem={LeadsQualificadosOrigem} />
                 </div>
             </section>
 

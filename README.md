@@ -44,7 +44,7 @@ O resultado é apresentado em um dashboard que combina:
 
 ## 🖥️ Dashboard
 
-![Dashboard](docs/dashboard.jpg)
+![Dashboard](docs/dashboard.JPG)
 
 O dashboard foi desenvolvido para permitir que o consultor tenha uma visão rápida da carteira e consiga partir dos indicadores gerais para a análise individual dos leads.
 
@@ -62,7 +62,9 @@ Entre as informações apresentadas estão:
 
 ## 🔎 Detalhamento de um lead
 
-![Detalhamento do Lead](docs/lead-modal.jpg)
+![Detalhamento do Lead](docs/lead-modal1.JPG)
+
+![Detalhamento da Análise da IA](docs/lead-modal2.JPG)
 
 Ao clicar em um lead da tabela, é aberto um modal com as informações estruturadas durante o processamento.
 
@@ -99,7 +101,7 @@ O objetivo é evitar mensagens genéricas e fornecer ao consultor uma sugestão 
 
 ## 💡 Recomendações comerciais
 
-![Recomendações](docs/recomendacoes.jpg)
+![Recomendações](docs/recomendacoes.JPG)
 
 A seção de recomendações foi pensada para ir além da simples apresentação dos indicadores.
 
@@ -115,9 +117,7 @@ A proposta é transformar os dados coletados durante a entrada do lead em inform
 
 ## 🧪 Simulação de novos leads
 
-![Simulação de Lead](docs/simulador-lead1.jpg)
-
-![Simulação de Lead Continuação](docs/simulador-lead2.jpg)
+![Simulação de Lead](docs/simulador-lead.JPG)
 
 O dashboard possui uma área de simulação que permite testar o processamento de novos leads.
 
@@ -170,9 +170,13 @@ Responsável pela interface, visualização dos dados, filtros, indicadores, rec
 Responsável por receber o evento, orquestrar o processamento e conectar a inteligência artificial ao banco de dados.
 - **Tecnologias:** n8n + Gemini
 
+![Workflow n8n](docs/workflow-n8n.JPG)
+
 ### Persistência
 Responsável pelo armazenamento estruturado dos leads e pelas consultas utilizadas pelo dashboard.
 - **Tecnologias:** Supabase / PostgreSQL
+
+![Tabela de Leads no Supabase](docs/supabase-leads.JPG)
 
 ### Visão geral
 

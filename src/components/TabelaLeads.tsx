@@ -236,68 +236,136 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
             {/* Tabela de Leads */}
             <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-center text-xs text-slate-700">
+                    <table className="w-full text-xs text-slate-700">
                         <thead className="bg-[#F8F9FB] text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200/80">
                             <tr>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Lead / Contato</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Origem</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Status</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Região</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Tipo de Imóvel</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Faixa de Valor</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Intenção de Compra</th>
-                                <th className="py-4 px-6 font-bold text-[#040136]">Último Contato</th>
+                                <th className="py-3.5 px-3 sm:px-4 lg:px-5 text-left font-bold text-[#040136]">
+                                    Lead / Contato
+                                </th>
+                                <th className="py-3.5 px-3 sm:px-4 text-center font-bold text-[#040136] whitespace-nowrap">
+                                    Status
+                                </th>
+                                <th className="hidden md:table-cell py-3.5 px-3 sm:px-4 text-left font-bold text-[#040136] whitespace-nowrap">
+                                    Origem
+                                </th>
+                                <th className="hidden lg:table-cell py-3.5 px-3 sm:px-4 text-left font-bold text-[#040136]">
+                                    Imóvel / Região
+                                </th>
+                                <th className="hidden sm:table-cell py-3.5 px-3 sm:px-4 text-left font-bold text-[#040136] whitespace-nowrap">
+                                    Faixa de Valor
+                                </th>
+                                <th className="hidden sm:table-cell py-3.5 px-3 sm:px-4 text-center font-bold text-[#040136] whitespace-nowrap">
+                                    Último Contato
+                                </th>
+                                <th className="py-3.5 px-3 sm:px-4 text-right font-bold text-[#040136]">
+                                    <span className="sr-only">Ações</span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {/*Verifica se tem leads filtrados para exibir*/}
+                            {/* Verifica se tem leads filtrados para exibir */}
                             {leadsPaginados.length === 0 ? (
                                 <tr>
-                                    <td colSpan={8} className="py-14 text-center text-slate-400">
+                                    <td colSpan={7} className="py-14 text-center text-slate-400">
                                         Nenhum lead encontrado com os filtros selecionados.
                                     </td>
                                 </tr>
                             ) : (
-                                /*Renderiza apenas os leads da página atual*/
+                                /* Renderiza os leads da página atual */
                                 leadsPaginados.map((lead) => (
-                                    <tr key={lead.id} onClick={() => setLeadSelecionado(lead)} className="hover:bg-[#EE4C01]/10 cursor-pointer transition-colors">
-                                        <td className="py-4 px-6">
-                                            <div className="font-bold text-[#040136] text-sm">
+                                    <tr 
+                                        key={lead.id} 
+                                        onClick={() => setLeadSelecionado(lead)} 
+                                        className="hover:bg-[#EE4C01]/5 active:bg-[#EE4C01]/10 cursor-pointer transition-colors group"
+                                    >
+                                        {/* Lead / Contato */}
+                                        <td className="py-3.5 px-3 sm:px-4 lg:px-5 text-left">
+                                            <div className="font-bold text-[#040136] text-sm leading-snug group-hover:text-[#EE4C01] transition-colors">
                                                 {lead.nome}
                                             </div>
                                             {lead.telefone && (
-                                                <div className="text-xs text-slate-400 mt-0.5 font-medium">
+                                                <div className="text-xs text-slate-500 mt-0.5 font-medium whitespace-nowrap">
                                                     {lead.telefone}
                                                 </div>
                                             )}
-                                        </td>
-                                        <td className="py-4 px-6 font-semibold text-slate-700">
-                                            {formatarOrigem(lead.origem)}
-                                        </td>
-                                        <td className="py-4 px-6">
-                                            {renderStatusBadge(lead.status)}
-                                        </td>
-                                        {/* Região */}
-                                        <td className="py-4 px-6 text-slate-600 font-medium">
-                                            {formatarTexto(lead.regiao)}
-                                        </td>
-                                        {/* Tipo de Imóvel */}
-                                        <td className="py-4 px-6 text-slate-600 font-medium">
-                                            {formatarTexto(lead.tipo_imovel)}
-                                        </td>
-                                        {/* Faixa de Valor */}
-                                        <td className="py-4 px-6 font-black text-slate-800 whitespace-nowrap">
-                                            {formatarTexto(lead.faixa_valor)}
-                                        </td>
-                                        {/* Intenção de Compra */}
-                                        <td className="py-4 px-6 text-slate-600 max-w-xs truncate font-medium" title={lead.intencao_compra || ''}>
-                                            {formatarIntencao(lead.intencao_compra)}
+
+                                            {/* Micro-tags complementares no mobile */}
+                                            <div className="flex flex-wrap items-center gap-1.5 mt-1.5 md:hidden">
+                                                {lead.origem && (
+                                                    <span className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">
+                                                        {formatarOrigem(lead.origem)}
+                                                    </span>
+                                                )}
+                                                {lead.regiao && (
+                                                    <span className="text-[10px] text-slate-500 font-medium">
+                                                        • {formatarTexto(lead.regiao)}
+                                                    </span>
+                                                )}
+                                                {/* Badge de atenção no mobile se aplicável */}
+                                                {(() => {
+                                                    if (!lead.ultimo_contato || lead.status === 'perdido') return null
+                                                    const statusAcomp = classificarAcompanhamento(lead.ultimo_contato)
+                                                    const dias = calcularDiasSemContato(lead.ultimo_contato)
+                                                    if (statusAcomp === 'atencao') {
+                                                        return (
+                                                            <span className="text-[9px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">
+                                                                {dias}d sem contato
+                                                            </span>
+                                                        )
+                                                    }
+                                                    if (statusAcomp === 'perdido' || (dias && dias >= 10)) {
+                                                        return (
+                                                            <span className="text-[9px] font-bold bg-red-100 text-red-700 px-1.5 py-0.5 rounded border border-red-200">
+                                                                +10d sem contato
+                                                            </span>
+                                                        )
+                                                    }
+                                                    return null
+                                                })()}
+                                            </div>
                                         </td>
 
-                                        <td className="py-4 px-6 whitespace-nowrap font-medium text-center">
+                                        {/* Status */}
+                                        <td className="py-3.5 px-3 sm:px-4 text-center whitespace-nowrap">
+                                            {renderStatusBadge(lead.status)}
+                                        </td>
+
+                                        {/* Origem */}
+                                        <td className="hidden md:table-cell py-3.5 px-3 sm:px-4 text-left font-semibold text-slate-700 whitespace-nowrap">
+                                            <span className="inline-block bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg text-xs">
+                                                {formatarOrigem(lead.origem)}
+                                            </span>
+                                        </td>
+
+                                        {/* Imóvel / Região */}
+                                        <td className="hidden lg:table-cell py-3.5 px-3 sm:px-4 text-left">
+                                            <div className="font-semibold text-slate-800 text-xs">
+                                                {formatarTexto(lead.tipo_imovel)}
+                                            </div>
+                                            {lead.regiao && (
+                                                <div className="text-[11px] text-slate-500 font-normal">
+                                                    {formatarTexto(lead.regiao)}
+                                                </div>
+                                            )}
+                                        </td>
+
+                                        {/* Faixa de Valor */}
+                                        <td className="hidden sm:table-cell py-3.5 px-3 sm:px-4 text-left">
+                                            <div className="font-black text-slate-800 text-xs whitespace-nowrap">
+                                                {formatarTexto(lead.faixa_valor)}
+                                            </div>
+                                            {lead.intencao_compra && (
+                                                <div className="text-[11px] text-slate-400 font-normal truncate max-w-[130px]" title={lead.intencao_compra}>
+                                                    {formatarIntencao(lead.intencao_compra)}
+                                                </div>
+                                            )}
+                                        </td>
+
+                                        {/* Último Contato */}
+                                        <td className="hidden sm:table-cell py-3.5 px-3 sm:px-4 whitespace-nowrap font-medium text-center">
                                             {lead.ultimo_contato ? (
-                                                <div className="flex flex-col items-center justify-center gap-1">
-                                                    <span className="text-slate-700 text-sm font-semibold">
+                                                <div className="flex flex-col items-center justify-center gap-0.5">
+                                                    <span className="text-slate-700 text-xs font-semibold">
                                                         {formatarData(lead.ultimo_contato)}
                                                     </span>
                                                     {(() => {
@@ -306,14 +374,14 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
 
                                                         if (statusAcomp === 'atencao' && lead.status !== 'perdido') {
                                                             return (
-                                                                <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200">
+                                                                <span className="text-[9px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full border border-amber-200">
                                                                     {dias}d sem contato
                                                                 </span>
                                                             )
                                                         }
                                                         if (statusAcomp === 'perdido' || (dias && dias >= 10)) {
                                                             return (
-                                                                <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full border border-red-200">
+                                                                <span className="text-[9px] font-bold bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full border border-red-200">
                                                                     +10d sem contato
                                                                 </span>
                                                             )
@@ -326,22 +394,27 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                             )}
                                         </td>
 
-
+                                        {/* Ação / Detalhes */}
+                                        <td className="py-3.5 px-3 sm:px-4 text-right">
+                                            <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-50 text-slate-400 group-hover:bg-[#EE4C01]/10 group-hover:text-[#EE4C01] transition-colors text-xs font-bold">
+                                                →
+                                            </span>
+                                        </td>
                                     </tr>
                                 ))
                             )}
                         </tbody>
                     </table>
 
-                    {/*Barra de controle de paginação*/}
+                    {/* Barra de controle de paginação */}
                     {totalItens > 0 && (
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-slate-200/80 bg-[#F8F9FB]/50 text-xs">
-                            <span className="text-slate-500 font-medium">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-6 py-3.5 sm:py-4 border-t border-slate-200/80 bg-[#F8F9FB]/50 text-xs">
+                            <span className="text-slate-500 font-medium text-center sm:text-left">
                                 Mostrando <strong className="text-[#040136]">{inicioIndex + 1}</strong> a <strong className="text-[#040136]">{fimIndex}</strong> de <strong className="text-[#040136]">{totalItens}</strong> leads
                             </span>
 
                             <div className="flex items-center gap-2">
-                                {/*Botão para página anterior*/}
+                                {/* Botão para página anterior */}
                                 <button
                                     type="button"
                                     onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
@@ -351,12 +424,12 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                     Anterior
                                 </button>
 
-                                {/*Indicador de página atual e total*/}
-                                <span className="font-bold text-[#040136] px-2">
+                                {/* Indicador de página atual e total */}
+                                <span className="font-bold text-[#040136] px-2 whitespace-nowrap">
                                     {paginaAtual} de {totalPaginas}
                                 </span>
 
-                                {/*Botão para próxima página*/}
+                                {/* Botão para próxima página */}
                                 <button
                                     type="button"
                                     onClick={() => setPaginaAtual((prev) => Math.min(prev + 1, totalPaginas))}

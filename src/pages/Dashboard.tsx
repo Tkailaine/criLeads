@@ -11,13 +11,32 @@ import { classificarAcompanhamento } from '../utils/acompanhamento'
 import RecomendacoesCarteira from '../components/RecomendacoesCarteira'
 
 
+// Componente de carregamento elegante e moderno
+function CarregandoCard({ texto = 'Carregando dados...' }: { texto?: string }) {
+    return (
+        <div className="flex flex-col items-center justify-center gap-3.5 py-12 px-6 text-center">
+            <div className="relative flex items-center justify-center">
+                {/* Efeito sutil de expansão (pulse) */}
+                <div className="w-11 h-11 rounded-full border-2 border-[#EE4C01]/25 animate-ping absolute" />
+                {/* Spinner moderno de duas cores */}
+                <div className="w-11 h-11 rounded-full border-3 border-slate-200 border-t-[#EE4C01] border-r-[#040136] animate-spin" />
+            </div>
+            <p className="text-xs md:text-sm font-bold text-[#040136] tracking-tight mt-1">
+                {texto}
+            </p>
+        </div>
+    )
+}
+
 export default function Dashboard() {
     const [leads, setLeads] = useState<Lead[]>([])
     const [LeadsPorOrigem, setLeadsPorOrigem] = useState<LeadsPorOrigem[]>([])
     const [LeadsQualificadosOrigem, setLeadsQualificadosOrigem] = useState<QualificacaoPorOrigem[]>([])
+    const [carregando, setCarregando] = useState(true)
 
-    //Função para buscar e atualizar todos os dados do Supabase no dashboard
+    // Função para buscar e atualizar todos os dados do Supabase no dashboard
     async function carregarDashboard() {
+        setCarregando(true)
         try {
             const dados = await buscarLeads()
             setLeads(dados ?? [])
@@ -29,10 +48,12 @@ export default function Dashboard() {
             setLeadsQualificadosOrigem(dadosQualificadosOrigem ?? [])
         } catch (error) {
             console.error('Erro ao carregar dados do Supabase:', error)
+        } finally {
+            setCarregando(false)
         }
     }
 
-    //Carrega os dados ao montar o componente
+    // Carrega os dados ao montar o componente
     useEffect(() => {
         carregarDashboard()
     }, [])
@@ -49,27 +70,50 @@ export default function Dashboard() {
     return (
         <div className="w-full flex flex-col">
             {/* Alerta de leads que precisam de contato (Fundo azul #040136) */}
-            <AlertaOperacional leadsAtencaoCount={leadsAtencaoCount} />
+            <AlertaOperacional leadsAtencaoCount={leadsAtencaoCount} carregando={carregando} />
 
 
             {/* INDICADORES (Fundo Branco) */}
             <section className="bg-white py-12 md:py-16 border-b border-slate-200/80">
                 <div className="max-w-7xl mx-auto px-6 sm:px-8">
-                    <Indicadores leads={leads} />
+                    {carregando ? (
+                        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+                            <CarregandoCard texto="Carregando e calculando indicadores..." />
+                        </div>
+                    ) : (
+                        <Indicadores leads={leads} />
+                    )}
                 </div>
             </section>
 
-            {/* LEADS POR ORIGEM & QUALIFICAÇÃO + INSIGHTS (Fundo Claro #F8F9FB) */}
+            {/* LEADS POR ORIGEM & QUALIFICAÇÃO + RECOMENDAÇÕES (Fundo Claro #F8F9FB) */}
             <section className="bg-[#F8F9FB] py-12 md:py-16 border-b border-slate-200/80">
                 <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-8">
+                    {carregando ? (
+                        <div className="space-y-8">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+                                    <CarregandoCard texto="Carregando leads por origem..." />
+                                </div>
+                                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+                                    <CarregandoCard texto="Calculando taxas de qualificação..." />
+                                </div>
+                            </div>
+                            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+                                <CarregandoCard texto="Analisando padrões e calculando recomendações..." />
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                {/* Leads por origem em gráfico */}
+                                <LeadsPorOrigemCard dados={LeadsPorOrigem} totalLeads={totalLeadsOrigem || leads.length} />
+                                <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
+                            </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {/*Leads por origem em gráfico */}
-                        <LeadsPorOrigemCard dados={LeadsPorOrigem} totalLeads={totalLeadsOrigem || leads.length} />
-                        <QualificacaoPorOrigemCard dados={LeadsQualificadosOrigem} />
-                    </div>
-
-                    <RecomendacoesCarteira leads={leads} leadsAtencaoCount={leadsAtencaoCount} leadsPorOrigem={LeadsPorOrigem} qualificacaoPorOrigem={LeadsQualificadosOrigem} />
+                            <RecomendacoesCarteira leads={leads} leadsAtencaoCount={leadsAtencaoCount} qualificacaoPorOrigem={LeadsQualificadosOrigem} />
+                        </>
+                    )}
                 </div>
             </section>
 
@@ -88,7 +132,7 @@ export default function Dashboard() {
                         </p>
                     </div>
 
-                    {/*Formulário para testar o processamento do lead via webhook */}
+                    {/* Formulário para testar o processamento do lead via webhook */}
                     <FormularioLead onLeadCriado={carregarDashboard} />
                 </div>
             </section>
@@ -120,7 +164,13 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <TabelaLeads leads={leads} />
+                    {carregando ? (
+                        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+                            <CarregandoCard texto="Carregando base de leads..." />
+                        </div>
+                    ) : (
+                        <TabelaLeads leads={leads} />
+                    )}
                 </div>
             </section>
         </div>

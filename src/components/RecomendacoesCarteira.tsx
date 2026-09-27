@@ -9,7 +9,7 @@ import type { Lead } from '../services/leads'
 type InsightsOperacionaisProps = {
     leads: Lead[]
     leadsAtencaoCount: number
-    leadsPorOrigem: LeadsPorOrigem[]
+    leadsPorOrigem?: LeadsPorOrigem[]
     qualificacaoPorOrigem: QualificacaoPorOrigem[]
 }
 
@@ -17,27 +17,12 @@ type InsightsOperacionaisProps = {
 export default function InsightsOperacionais({
     leads,
     leadsAtencaoCount,
-    leadsPorOrigem,
     qualificacaoPorOrigem
 }: InsightsOperacionaisProps) {
 
     //Encontra o canal com maior taxa de qualificação
     const maiorTaxaQualificacao = [...qualificacaoPorOrigem]
         .sort((a, b) => b.percentual_qualificados - a.percentual_qualificados)[0]
-
-    //Encontra a região com maior concentração de leads
-    const leadsPorRegiao = leads.reduce<Record<string, number>>((acc, lead) => {
-        if (!lead.regiao) return acc
-
-        const regiao = lead.regiao.trim()
-
-        acc[regiao] = (acc[regiao] || 0) + 1
-
-        return acc
-    }, {})
-
-    const maiorRegiao = Object.entries(leadsPorRegiao)
-        .sort((a, b) => b[1] - a[1])[0]
 
     //Encontra a combinação de região e tipo de imóvel mais recorrente
     const combinacoesImoveis = leads.reduce<Record<string, number>>((acc, lead) => {

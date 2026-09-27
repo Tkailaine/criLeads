@@ -1,10 +1,11 @@
-//Tipagem das propriedades do cabeçalho de atenção
+// Tipagem das propriedades do cabeçalho de atenção
 type HeroAtencaoProps = {
     totalAtencao: number
+    carregando?: boolean
 }
 
 
-export default function HeroAtencao({ totalAtencao }: HeroAtencaoProps) {
+export default function HeroAtencao({ totalAtencao, carregando = false }: HeroAtencaoProps) {
     return (
         <section className="bg-[#040136] text-white py-10 md:py-12 border-b border-[#040136]">
             <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-4">
@@ -27,9 +28,15 @@ export default function HeroAtencao({ totalAtencao }: HeroAtencaoProps) {
 
                     {/* Contador de leads em atenção */}
                     <div className="flex items-center gap-3">
-                        <div className="bg-white/10 border border-white/15 px-5 py-2.5 rounded-xl text-center">
+                        <div className="bg-white/10 border border-white/15 px-5 py-2.5 rounded-xl text-center min-w-[120px]">
                             <span className="block text-xs font-bold text-[#EE4C01]">Em Atenção</span>
-                            <strong className="text-xl font-black text-white">{totalAtencao}</strong>
+                            {carregando ? (
+                                <div className="flex items-center justify-center py-1">
+                                    <span className="w-5 h-5 rounded-full border-2 border-white/20 border-t-[#EE4C01] border-r-[#EE4C01] animate-spin" />
+                                </div>
+                            ) : (
+                                <strong className="text-xl font-black text-white">{totalAtencao}</strong>
+                            )}
                         </div>
                     </div>
                 </div>

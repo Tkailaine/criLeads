@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom'
 
 type AlertaOperacionalProps = {
     leadsAtencaoCount: number
+    carregando?: boolean
 }
 
-//Alerta para leads que merecem atenção com link para a Central de Atenção
-export default function AlertaOperacional({ leadsAtencaoCount }: AlertaOperacionalProps) {
+// Alerta para leads que merecem atenção com link para a Central de Atenção
+export default function AlertaOperacional({ leadsAtencaoCount, carregando = false }: AlertaOperacionalProps) {
     return (
         <section className="bg-[#040136] text-white py-8 md:py-10 border-b border-[#040136]">
             <div className="max-w-7xl mx-auto px-6 sm:px-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -16,11 +17,18 @@ export default function AlertaOperacional({ leadsAtencaoCount }: AlertaOperacion
                             Atenção no Acompanhamento
                         </span>
                     </div>
-                    <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
-                        {/* Exibe contagem de leads próximos do limite de 10 dias */}
-                        {leadsAtencaoCount > 0
-                            ? `${leadsAtencaoCount} ${leadsAtencaoCount === 1 ? 'lead próximo' : 'leads próximos'} do limite de 10 dias`
-                            : 'Nenhum lead próximo do limite de 10 dias'}
+                    <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white flex items-center gap-3">
+                        {/* Exibe estado de carregamento ou contagem de leads */}
+                        {carregando ? (
+                            <span className="inline-flex items-center gap-2.5 text-slate-300 text-xl md:text-2xl font-bold">
+                                <span className="w-5 h-5 rounded-full border-2 border-white/20 border-t-[#EE4C01] border-r-[#EE4C01] animate-spin" />
+                                Carregando status de acompanhamento...
+                            </span>
+                        ) : leadsAtencaoCount > 0 ? (
+                            `${leadsAtencaoCount} ${leadsAtencaoCount === 1 ? 'lead próximo' : 'leads próximos'} do limite de 10 dias`
+                        ) : (
+                            'Nenhum lead próximo do limite de 10 dias'
+                        )}
                     </h2>
                     <p className="text-xs md:text-sm text-slate-300 font-normal">
                         Leads sem contato entre 7 e 9 dias que exigem acompanhamento imediato antes de atingirem o limite de perda (10+ dias).

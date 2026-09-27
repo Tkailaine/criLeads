@@ -6,17 +6,35 @@ import CentralPrioridades from '../components/CentralPrioridades'
 import TabelaLeads from '../components/TabelaLeads'
 import ModalLead from '../components/ModalLead'
 
-//Página de acompanhamento dos leads que precisam de atenção
+// Componente de carregamento elegante e moderno
+function CarregandoCard({ texto = 'Carregando dados...' }: { texto?: string }) {
+    return (
+        <div className="flex flex-col items-center justify-center gap-3.5 py-12 px-6 text-center">
+            <div className="relative flex items-center justify-center">
+                {/* Efeito sutil de expansão (pulse) */}
+                <div className="w-11 h-11 rounded-full border-2 border-[#EE4C01]/25 animate-ping absolute" />
+                {/* Spinner moderno de duas cores */}
+                <div className="w-11 h-11 rounded-full border-3 border-slate-200 border-t-[#EE4C01] border-r-[#040136] animate-spin" />
+            </div>
+            <p className="text-xs md:text-sm font-bold text-[#040136] tracking-tight mt-1">
+                {texto}
+            </p>
+        </div>
+    )
+}
+
+// Página de acompanhamento dos leads que precisam de atenção
 export default function AtencaoLeads() {
-    //Estados para armazenar os leads, controle de aba, carregamento e modal
+    // Estados para armazenar os leads, controle de aba, carregamento e modal
     const [leads, setLeads] = useState<Lead[]>([])
     const [abaSelecionada, setAbaSelecionada] = useState<'todos' | 'acompanhamento' | 'novos'>('todos')
     const [carregando, setCarregando] = useState(true)
     const [leadSelecionado, setLeadSelecionado] = useState<Lead | null>(null)
 
-    //Busca os dados do Supabase ao carregar a página
+    // Busca os dados do Supabase ao carregar a página
     useEffect(() => {
         async function carregarLeads() {
+            setCarregando(true)
             try {
                 const dados = await buscarLeads()
                 setLeads(dados ?? [])
@@ -51,7 +69,7 @@ export default function AtencaoLeads() {
         return classificacao === 'atencao' || classificacao === 'sem_contato' || !lead.ultimo_contato
     })
 
-    //Define os leads a serem exibidos de acordo com a aba selecionada
+    // Define os leads a serem exibidos de acordo com a aba selecionada
     const leadsExibidos = abaSelecionada === 'acompanhamento'
         ? leadsAcompanhamento
         : abaSelecionada === 'novos'
@@ -63,6 +81,7 @@ export default function AtencaoLeads() {
             {/* Componente do topo informativo */}
             <HeroAtencaoLeads
                 totalAtencao={leadsTodosAtencao.length}
+                carregando={carregando}
             />
 
             {/* Seção da tabela com os filtros de atenção */}
@@ -70,7 +89,11 @@ export default function AtencaoLeads() {
                 <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-10">
                     
                     {/* Componente de prioridades com a análise da IA */}
-                    {!carregando && (
+                    {carregando ? (
+                        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+                            <CarregandoCard texto="Calculando prioridades e recomendações com IA..." />
+                        </div>
+                    ) : (
                         <CentralPrioridades
                             leads={leadsAcompanhamento}
                             onVerLead={(lead) => setLeadSelecionado(lead)}
@@ -143,8 +166,8 @@ export default function AtencaoLeads() {
 
                         {/* Exibe indicador de carregamento ou a tabela paginada com os leads filtrados */}
                         {carregando ? (
-                            <div className="py-20 text-center text-slate-400 font-medium text-sm">
-                                Carregando leads para acompanhamento...
+                            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+                                <CarregandoCard texto="Carregando leads para acompanhamento..." />
                             </div>
                         ) : (
                             <TabelaLeads leads={leadsExibidos} />

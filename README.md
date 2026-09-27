@@ -44,7 +44,7 @@ O resultado é apresentado em um dashboard que combina:
 
 ## 🖥️ Dashboard
 
-![Dashboard](docs/dashboard.jpeg)
+![Dashboard](docs/dashboard.jpg)
 
 O dashboard foi desenvolvido para permitir que o consultor tenha uma visão rápida da carteira e consiga partir dos indicadores gerais para a análise individual dos leads.
 
@@ -62,7 +62,7 @@ Entre as informações apresentadas estão:
 
 ## 🔎 Detalhamento de um lead
 
-![Detalhamento do Lead](docs/lead-modal.jpeg)
+![Detalhamento do Lead](docs/lead-modal.jpg)
 
 Ao clicar em um lead da tabela, é aberto um modal com as informações estruturadas durante o processamento.
 
@@ -99,7 +99,7 @@ O objetivo é evitar mensagens genéricas e fornecer ao consultor uma sugestão 
 
 ## 💡 Recomendações comerciais
 
-![Recomendações](docs/recomendacoes.jpeg)
+![Recomendações](docs/recomendacoes.jpg)
 
 A seção de recomendações foi pensada para ir além da simples apresentação dos indicadores.
 
@@ -115,9 +115,9 @@ A proposta é transformar os dados coletados durante a entrada do lead em inform
 
 ## 🧪 Simulação de novos leads
 
-![Simulação de Lead](docs/simulador-lead1.jpeg)
+![Simulação de Lead](docs/simulador-lead1.jpg)
 
-![Simulação de Lead Continuação](docs/simulador-lead2.jpeg)
+![Simulação de Lead Continuação](docs/simulador-lead2.jpg)
 
 O dashboard possui uma área de simulação que permite testar o processamento de novos leads.
 

@@ -169,7 +169,7 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                 {/* Intenção */}
                 <div>
                     <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                        Intenção
+                        Intenção de compra
                     </label>
                     <select
                         value={filtroIntencao}
@@ -308,15 +308,15 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
                                                     const dias = calcularDiasSemContato(lead.ultimo_contato)
                                                     if (statusAcomp === 'atencao') {
                                                         return (
-                                                            <span className="text-[9px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">
-                                                                {dias}d sem contato
+                                                            <span className="text-[9px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded border border-amber-200">
+                                                                {dias} {dias === 1 ? 'dia' : 'dias'} sem contato
                                                             </span>
                                                         )
                                                     }
                                                     if (statusAcomp === 'perdido' || (dias && dias >= 10)) {
                                                         return (
-                                                            <span className="text-[9px] font-bold bg-red-100 text-red-700 px-1.5 py-0.5 rounded border border-red-200">
-                                                                +10d sem contato
+                                                            <span className="text-[9px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded border border-red-200">
+                                                                {dias} {dias === 1 ? 'dia' : 'dias'} sem contato
                                                             </span>
                                                         )
                                                     }
@@ -374,15 +374,15 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
 
                                                         if (statusAcomp === 'atencao' && lead.status !== 'perdido') {
                                                             return (
-                                                                <span className="text-[9px] font-bold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full border border-amber-200">
-                                                                    {dias}d sem contato
+                                                                <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200">
+                                                                    {dias} {dias === 1 ? 'dia' : 'dias'} sem contato
                                                                 </span>
                                                             )
                                                         }
                                                         if (statusAcomp === 'perdido' || (dias && dias >= 10)) {
                                                             return (
-                                                                <span className="text-[9px] font-bold bg-red-100 text-red-700 px-1.5 py-0.5 rounded-full border border-red-200">
-                                                                    +10d sem contato
+                                                                <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full border border-red-200">
+                                                                    {dias} {dias === 1 ? 'dia' : 'dias'} sem contato
                                                                 </span>
                                                             )
                                                         }

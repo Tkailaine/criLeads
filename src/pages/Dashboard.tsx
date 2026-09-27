@@ -38,10 +38,11 @@ export default function Dashboard() {
     }, [])
 
     const totalLeadsOrigem = LeadsPorOrigem.reduce((acc, item) => acc + Number(item.total_leads || 0), 0)
-    //Contagem de leads em atenção utilizando diretamente as regras de classificarAcompanhamento
+    // Contagem de leads próximos do limite de 10 dias (7 a 9 dias sem contato)
     const leadsAtencaoCount = leads.filter(l => {
+        if (l.status === 'perdido') return false
         const classificacao = classificarAcompanhamento(l.ultimo_contato)
-        return classificacao === 'atencao' || classificacao === 'sem_contato'
+        return classificacao === 'atencao'
     }).length
 
 

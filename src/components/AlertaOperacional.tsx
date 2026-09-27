@@ -17,13 +17,13 @@ export default function AlertaOperacional({ leadsAtencaoCount }: AlertaOperacion
                         </span>
                     </div>
                     <h2 className="text-2xl md:text-3xl font-black tracking-tight text-white">
-                        {/* Verifica se tem leads novos para contato*/}
+                        {/* Exibe contagem de leads próximos do limite de 10 dias */}
                         {leadsAtencaoCount > 0
-                            ? `${leadsAtencaoCount} leads precisam de contato`
-                            : 'Nenhum lead com contato pendente'}
+                            ? `${leadsAtencaoCount} ${leadsAtencaoCount === 1 ? 'lead próximo' : 'leads próximos'} do limite de 10 dias`
+                            : 'Nenhum lead próximo do limite de 10 dias'}
                     </h2>
                     <p className="text-xs md:text-sm text-slate-300 font-normal">
-                        Último contato quase 10 dias, leads recém-cadastrados ou com prioridade alta aguardando retorno.
+                        Leads sem contato entre 7 e 9 dias que exigem acompanhamento imediato antes de atingirem o limite de perda (10+ dias).
                     </p>
                 </div>
 

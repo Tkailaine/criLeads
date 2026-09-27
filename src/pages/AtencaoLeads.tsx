@@ -30,25 +30,25 @@ export default function AtencaoLeads() {
         carregarLeads()
     }, [])
 
-    //Filtra leads em acompanhamento (7 a 9 dias sem contato)
+    // Filtra leads em acompanhamento (estritamente 7 a 9 dias sem contato)
     const leadsAcompanhamento = leads.filter((lead) => {
         if (lead.status === 'perdido') return false
         const classificacao = classificarAcompanhamento(lead.ultimo_contato)
         return classificacao === 'atencao'
     })
 
-    //Filtra leads novos ou sem contato registrado
+    // Filtra leads novos ou sem contato registrado (ultimo_contato nulo)
     const leadsNovos = leads.filter((lead) => {
         if (lead.status === 'perdido') return false
         const classificacao = classificarAcompanhamento(lead.ultimo_contato)
-        return classificacao === 'sem_contato' || lead.status === 'novo'
+        return classificacao === 'sem_contato' || !lead.ultimo_contato
     })
 
-    //Lista todos os leads que precisam de atenção (acompanhamento + novos)
+    // Lista os leads da Central de Atenção (Acompanhamento 7-9d + Novos sem contato)
     const leadsTodosAtencao = leads.filter((lead) => {
         if (lead.status === 'perdido') return false
         const classificacao = classificarAcompanhamento(lead.ultimo_contato)
-        return classificacao === 'atencao' || classificacao === 'sem_contato' || lead.status === 'novo'
+        return classificacao === 'atencao' || classificacao === 'sem_contato' || !lead.ultimo_contato
     })
 
     //Define os leads a serem exibidos de acordo com a aba selecionada

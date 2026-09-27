@@ -64,7 +64,7 @@ function CardPrioridadeLead({ lead, onVerLead }: CardPrioridadeLeadProps) {
 
                     {diasSemContato !== null && (
                         <span className="shrink-0 text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-1 rounded-full">
-                            {diasSemContato}d sem contato
+                            {diasSemContato} {diasSemContato === 1 ? 'dia' : 'dias'} sem contato
                         </span>
                     )}
                 </div>

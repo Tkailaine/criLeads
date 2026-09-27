@@ -372,7 +372,7 @@ export default function FormularioLead({ onLeadCriado }: FormularioLeadProps = {
 
             {/* Painel discreto e explícito com os dados processados pela IA */}
             {leadProcessado && analiseLead && (
-                <div className="bg-[#F8F9FB] rounded-2xl p-5 md:p-6 border border-slate-200/90 shadow-md text-slate-800 space-y-4 animate-fadeIn">
+                <div className="bg-[#F8F9FB] rounded-2xl p-5 md:p-6 border border-slate-200/90 shadow-md text-slate-800 space-y-4">
                     {/* Cabeçalho explicativo */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-slate-200">
                         <div className="space-y-1">

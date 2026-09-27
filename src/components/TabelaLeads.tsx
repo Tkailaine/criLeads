@@ -103,22 +103,22 @@ export default function TabelaLeads({ leads }: TabelaLeadsProps) {
 
     return (
         <div className="space-y-6">
+            {temFiltroAtivo && (
+                <div className="flex items-center justify-between gap-4">
+                    <span className="text-xs font-semibold text-slate-500">
+                        Exibindo <strong className="text-[#040136]">{leadsFiltrados.length}</strong> de <strong className="text-[#040136]">{leads.length}</strong> leads
+                    </span>
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            
-                <div className="flex items-center gap-4 self-start sm:self-auto">
-                  
-                    {temFiltroAtivo && (
-                        <button
-                            onClick={limparFiltros}
-                            className="text-xs font-bold text-[#EE4C01] hover:text-[#D84401] hover:underline cursor-pointer flex items-center gap-1 transition-colors"
-                        >
-                            <span>Limpar filtros</span>
-                            <span>×</span>
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        onClick={limparFiltros}
+                        className="text-xs font-bold text-[#EE4C01] hover:text-[#D84401] hover:underline cursor-pointer flex items-center gap-1 transition-colors"
+                    >
+                        <span>Limpar filtros</span>
+                        <span>×</span>
+                    </button>
                 </div>
-            </div>
+            )}
 
             {/* Painel de Filtros Discreto */}
             <div className="bg-[#F8F9FB] rounded-2xl p-5 border border-slate-200/70 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">

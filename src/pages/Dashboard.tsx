@@ -46,11 +46,9 @@ export default function Dashboard() {
 
 
     return (
-        <>
-
-            <main className="flex-1 w-full flex flex-col">
-                {/* Alerta de leads que precisam de contato (Fundo azul #040136) */}
-                <AlertaOperacional leadsAtencaoCount={leadsAtencaoCount} />
+        <div className="w-full flex flex-col">
+            {/* Alerta de leads que precisam de contato (Fundo azul #040136) */}
+            <AlertaOperacional leadsAtencaoCount={leadsAtencaoCount} />
 
 
                 {/* INDICADORES (Fundo Branco) */}
@@ -99,14 +97,34 @@ export default function Dashboard() {
 
                 {/* 6. BASE DE LEADS (Fundo Branco) */}
                 <section className="bg-white py-12 md:py-16">
-                    <div className="max-w-7xl mx-auto px-6 sm:px-8">
+                    <div className="max-w-7xl mx-auto px-6 sm:px-8 space-y-6">
+                        {/* Cabeçalho da Base de Leads */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-[#EE4C01]" />
+                                    <span className="text-[11px] font-black uppercase tracking-wider text-[#EE4C01]">
+                                        Base de Contatos
+                                    </span>
+                                </div>
+                                <h2 className="text-xl md:text-2xl font-black tracking-tight text-[#040136]">
+                                    Base de Leads
+                                </h2>
+                                <p className="text-xs md:text-sm text-slate-500 font-normal">
+                                    Acompanhe, filtre e gerencie todos os leads cadastrados no sistema.
+                                </p>
+                            </div>
+
+                            <div className="self-start sm:self-auto">
+                                <span className="text-xs font-semibold text-slate-600 bg-[#F4F5F8] px-3.5 py-2 rounded-xl border border-slate-200 inline-block">
+                                    Total: <strong className="text-[#040136]">{leads.length}</strong> {leads.length === 1 ? 'lead' : 'leads'}
+                                </span>
+                            </div>
+                        </div>
+
                         <TabelaLeads leads={leads} />
                     </div>
                 </section>
-
-            </main>
-
-
-        </>
+        </div>
     )
 }

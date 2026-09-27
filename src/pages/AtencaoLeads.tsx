@@ -59,7 +59,7 @@ export default function AtencaoLeads() {
             : leadsTodosAtencao
 
     return (
-        <main className="flex-1 w-full flex flex-col">
+        <div className="w-full flex flex-col">
             {/* Componente do topo informativo */}
             <HeroAtencaoLeads
                 totalAtencao={leadsTodosAtencao.length}
@@ -78,6 +78,30 @@ export default function AtencaoLeads() {
                     )}
 
                     <div className="space-y-6">
+                        {/* Cabeçalho da seção de Leads em Atenção */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-[#EE4C01]" />
+                                    <span className="text-[11px] font-black uppercase tracking-wider text-[#EE4C01]">
+                                        Acompanhamento Operacional
+                                    </span>
+                                </div>
+                                <h2 className="text-xl md:text-2xl font-black tracking-tight text-[#040136]">
+                                    Leads que precisam de atenção
+                                </h2>
+                                <p className="text-xs md:text-sm text-slate-500 font-normal">
+                                    Acompanhe os leads sem contato recente e contatos novos que aguardam atendimento.
+                                </p>
+                            </div>
+
+                            <div className="self-start sm:self-auto">
+                                <span className="text-xs font-bold text-amber-900 bg-amber-50 px-3.5 py-2 rounded-xl border border-amber-200 inline-block">
+                                    Em atenção: <strong className="text-[#040136]">{leadsTodosAtencao.length}</strong> {leadsTodosAtencao.length === 1 ? 'lead' : 'leads'}
+                                </span>
+                            </div>
+                        </div>
+
                         {/* Filtros rápidos por abas (Todos, Acompanhamento 7-9d, Novos) */}
                         <div className="flex flex-wrap items-center gap-2 border-b border-slate-200/80 pb-4">
                             <button
@@ -136,6 +160,6 @@ export default function AtencaoLeads() {
                     onClose={() => setLeadSelecionado(null)}
                 />
             )}
-        </main>
+        </div>
     )
 }

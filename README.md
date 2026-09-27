@@ -341,25 +341,29 @@ Foram processados aproximadamente 40 leads durante os testes, incluindo exclusã
 ```text
 src/
 ├── components/
-│   ├── Indicadores
-│   ├── TabelaLeads
-│   ├── LeadsPorOrigem
-│   ├── QualificacaoPorOrigemCard
-│   ├── InsightsOperacionais
-│   └── ...
+│   ├── AlertaOperacional.tsx
+│   ├── CentralPrioridades.tsx
+│   ├── Footer.tsx
+│   ├── Header.tsx
+│   ├── HeroAtencaoLeads.tsx
+│   ├── Indicadores.tsx
+│   ├── ... 
 │
 ├── pages/
+│   ├── Dashboard.tsx
+│   ├── AtencaoLeads.tsx
+ 
 │
 ├── services/
-│   ├── leads
-│   └── relatorios
+│   ├── leads.ts
+│   └── relatorios.ts
 │
 ├── utils/
-│   ├── acompanhamento
-│   └── formatter
+│   ├── acompanhamento.ts
+│   └── formatter.ts
 │
 └── lib/
-    └── supabase
+    └── supabase.ts
 ```
 
 ---

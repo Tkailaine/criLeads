@@ -1,6 +1,6 @@
 import type { Lead } from '../services/leads'
 import { calcularDiasSemContato } from '../utils/acompanhamento'
-import { formatarIntencao, formatarOrigem, formatarTexto, formatarStatus, extrairDadosIA } from '../utils/formatters'
+import { formatarIntencao, formatarOrigem, formatarTexto, formatarStatus, extrairDadosIA, formatarRegiao, formatarFaixaValor } from '../utils/formatters'
 
 //Tipagem das propriedades recebidas pelo componente principal
 type CentralPrioridadesProps = {
@@ -89,7 +89,7 @@ function CardPrioridadeLead({ lead, onVerLead }: CardPrioridadeLeadProps) {
                         <div className="flex items-center justify-between">
                             <span className="text-slate-400">Interesse:</span>
                             <span className="text-slate-700 truncate max-w-[180px]">
-                                {[formatarTexto(lead.regiao), formatarTexto(lead.tipo_imovel)]
+                                {[formatarRegiao(lead.regiao), formatarTexto(lead.tipo_imovel)]
                                     .filter((t) => t !== '-')
                                     .join(' · ') || '-'}
                             </span>
@@ -100,7 +100,7 @@ function CardPrioridadeLead({ lead, onVerLead }: CardPrioridadeLeadProps) {
                         <div className="flex items-center justify-between">
                             <span className="text-slate-400">Faixa:</span>
                             <span className="text-slate-800 font-bold">
-                                {formatarTexto(lead.faixa_valor)}
+                                {formatarFaixaValor(lead.faixa_valor)}
                             </span>
                         </div>
                     )}

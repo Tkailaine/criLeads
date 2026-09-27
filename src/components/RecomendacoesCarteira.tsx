@@ -2,7 +2,7 @@ import {
     type LeadsPorOrigem,
     type QualificacaoPorOrigem
 } from '../services/relatorios'
-import { formatarOrigem, formatarPercentual } from '../utils/formatters'
+import { formatarOrigem, formatarPercentual, formatarRegiao, formatarTexto, formatarFaixaValor } from '../utils/formatters'
 import type { Lead } from '../services/leads'
 
 //Tipagem de props dos indicadores operacionais
@@ -28,7 +28,7 @@ export default function InsightsOperacionais({
     const combinacoesImoveis = leads.reduce<Record<string, number>>((acc, lead) => {
         if (!lead.regiao || !lead.tipo_imovel) return acc
 
-        const combinacao = `${lead.regiao} · ${lead.tipo_imovel}`
+        const combinacao = `${formatarRegiao(lead.regiao)} · ${formatarTexto(lead.tipo_imovel)}`
 
         acc[combinacao] = (acc[combinacao] || 0) + 1
 
@@ -71,7 +71,7 @@ export default function InsightsOperacionais({
             tipo: 'PERFIL MAIS RECORRENTE',
             titulo: `${maiorCombinacaoImovel[0]} concentra ${maiorCombinacaoImovel[1]} leads da carteira.`,
             descricao: maiorFaixaValor
-                ? `A faixa de valor mais recorrente atualmente é ${maiorFaixaValor[0]}, com ${maiorFaixaValor[1]} leads.`
+                ? `A faixa de valor mais recorrente atualmente é ${formatarFaixaValor(maiorFaixaValor[0])}, com ${maiorFaixaValor[1]} leads.`
                 : 'Esse perfil aparece com maior frequência entre os leads cadastrados.',
             acao: 'Usar esse perfil como referência para priorizar oportunidades, campanhas e abordagem comercial.'
         })
